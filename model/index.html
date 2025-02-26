@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat-container { width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .message { padding: 10px; margin: 5px; border-radius: 5px; }
+        .user { background: #d1e7fd; text-align: right; }
+        .bot { background: #f0f0f0; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <h3>Quiz Chatbot</h3>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Type your answer...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+    let input = document.getElementById("user-input").value;
+    let chatBox = document.getElementById("chat-box");
+
+    // Display user message
+    let userMessage = document.createElement("div");
+    userMessage.className = "message user";
+    userMessage.innerText = input;
+    chatBox.appendChild(userMessage);
+
+    // Fetch chatbot response
+    let response = await fetch("http://127.0.0.1:8000/chat/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_input: input, category: "Software" })
+    });
+
+    let data = await response.json();
+
+    // Display chatbot response
+    let botMessage = document.createElement("div");
+    botMessage.className = "message bot";
+    botMessage.innerText = data.response;
+    chatBox.appendChild(botMessage);
+
+    document.getElementById("user-input").value = "";
+}
+</script>
+
+</body>
+</html>

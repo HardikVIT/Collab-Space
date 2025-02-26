@@ -1,0 +1,75 @@
+.loginsignup{
+  width: 100%;  
+  background-image: url('lightblue.jpg');
+  background-color:rgb(135, 162, 187); 
+  height: 80vh;
+  padding-top: 100px;
+}
+.container{
+    width: 580px;
+    height: 600px;
+    margin: auto;
+    padding: 10px 60px;
+    background-color: rgba(208, 218, 228, 0.9);
+}
+.container *{
+    opacity: 1;
+}
+.container h1{
+    
+    margin: 10px 0px;
+    text-align: center;
+}
+.loginsignupfields{
+    
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top:30px ;
+    margin-left:75px;
+}
+.loginsignupfields input{
+    border:none;
+    outline: none;
+    background: none;
+    font-size: 18px;
+    color: #555;
+    padding: 20px 10px 20px 5px;
+    outline: none;
+    color: #5c5c5c;
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px  solid black;
+    font-weight: 700;
+
+}
+.submit{
+    width: 580px;
+    height: 72px;
+    background-color:#2c3e50;
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: 500;
+    cursor: pointer;
+    color: white;
+    outline: none;
+    border: none;
+}
+.signup{
+    
+    margin-top: 20px;
+    color: #5c5c5c;
+    font-size: 18px;
+    font-weight: 500;
+}
+.signup span{
+    color: #ff4141;
+    font-weight:600 ;
+}
+.sign{
+    outline: #fce3fe;
+    font-size: 20px;
+    color: black;
+    margin: 5px;
+    
+}

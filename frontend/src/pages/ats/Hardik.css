@@ -1,0 +1,216 @@
+.resume-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  .error-message {
+    background-color: #fff3f3;
+    color: #dc3545;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #ffd7d7;
+  }
+  
+  .form-section {
+    margin-bottom: 2rem;
+  }
+  
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .input-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  .file-upload-container {
+    border: 2px dashed #ddd;
+    padding: 1.5rem;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s;
+  }
+  
+  .file-upload-container:hover {
+    border-color: #007bff;
+  }
+  
+  .file-input {
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .file-name {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .analyze-btn, .clear-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .analyze-btn {
+    background-color: #007bff;
+    color: white;
+    flex: 2;
+  }
+  
+  .analyze-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .analyze-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .clear-btn {
+    background-color: #6c757d;
+    color: white;
+    flex: 1;
+  }
+  
+  .clear-btn:hover {
+    background-color: #5a6268;
+  }
+  
+  .clear-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .result-container {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .result-container h3 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+  }
+  
+  .chart-container {
+    margin: 2rem 0;
+    height: 300px;
+  }
+  
+  .score-details {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .score-item {
+    text-align: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    min-width: 200px;
+  }
+  
+  .score-label {
+    display: block;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .score-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .missing-keywords,
+  .matching-keywords {
+    margin-top: 2rem;
+  }
+  
+  .missing-keywords h4,
+  .matching-keywords h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .skill-tag {
+    padding: 0.5rem 1rem;
+    background-color: #ffc107;
+    color: #000;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .skill-tag.matching {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  @media (max-width: 768px) {
+    .resume-container {
+      margin: 1rem;
+      padding: 1rem;
+    }
+  
+    .score-details {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .button-group {
+      flex-direction: column;
+    }
+  
+    .analyze-btn,
+    .clear-btn {
+      flex: 1;
+    }
+  }

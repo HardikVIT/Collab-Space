@@ -1,0 +1,39 @@
+{
+  "name": "spacy",
+  "version": "0.0.4",
+  "description": "JavaScript API for spaCy with Python REST API",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "parcel build src/index.js --target node --no-source-maps --global spacy",
+    "dev": "parcel src/index.js --target node --no-source-maps --global spacy",
+    "package": "npm run build && npm pack"
+  },
+  "author": "Ines Montani",
+  "license": "MIT",
+  "homepage": "https://github.com/ines/spacy-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ines/spacy-js.git"
+  },
+  "keywords": [
+    "spacy",
+    "nlp",
+    "natural language processing",
+    "machine learning",
+    "artificial intelligence"
+  ],
+  "dependencies": {
+    "node-fetch": "^2.1.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-plugin-add-module-exports": "^1.0.0",
+    "jest": "^23.6.0",
+    "parcel-bundler": "^1.10.3",
+    "regenerator-runtime": "^0.12.1"
+  }
+}

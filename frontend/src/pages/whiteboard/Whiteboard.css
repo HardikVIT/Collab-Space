@@ -1,0 +1,110 @@
+.whiteboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: #b8cbe6;
+  }
+  
+  .toolbar {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #2d3436;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .tool-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0 10px;
+    border-right: 1px solid #636e72;
+  }
+  
+  .tool-group:last-child {
+    border-right: none;
+  }
+  
+  .tool-button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    background-color: #636e72;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .tool-button:hover {
+    background-color: #74b9ff;
+  }
+  
+  .tool-button.active {
+    background-color: #0984e3;
+    box-shadow: 0 0 0 2px #74b9ff;
+  }
+  
+  .color-picker {
+    height: 40px;
+    width: 60px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .brush-size {
+    width: 150px;
+    cursor: pointer;
+    accent-color: #0984e3;
+  }
+  
+  .clear-button {
+    padding: 8px 16px;
+    background-color: #d63031;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .clear-button:hover {
+    background-color: #ff4d4d;
+  }
+  
+  .whiteboard-canvas {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: crosshair;
+  }
+  
+  /* Custom cursor styles */
+  .whiteboard-canvas.eraser {
+    cursor: cell;
+  }
+  
+  .whiteboard-canvas.pointer {
+    cursor: pointer;
+  }
+  
+  .whiteboard-canvas.text {
+    cursor: text;
+  }
+  
+  .whiteboard-canvas.select {
+    cursor: crosshair;
+  }
