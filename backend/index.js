@@ -14,7 +14,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
-// Configure body parser with limits
+// Configure body parser with limits s
 app.use(bodyParser.json({ 
     limit: '50mb',
     verify: (req, res, buf) => {
