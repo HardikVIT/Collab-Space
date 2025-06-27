@@ -8,11 +8,7 @@ const app = express();
 const port = 5000;
 
 // Configure CORS to allow requests from frontend
-app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
-}));
+app.use(cors());
 
 // Configure body parser with limits s
 app.use(bodyParser.json({ 
