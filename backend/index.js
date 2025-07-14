@@ -30,7 +30,10 @@ function extractSkills(text) {
   const lowerText = text.toLowerCase();
   return SKILL_DATABASE.filter(skill => lowerText.includes(skill));
 }
-
+app.get("/", (req, res) => {
+    res.send("✅ Resume Matcher Backend is running.");
+  });
+  
 app.post("/api/analyze-resume", (req, res) => {
   const { resume_text, job_description } = req.body;
 
