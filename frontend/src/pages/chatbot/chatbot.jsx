@@ -22,7 +22,7 @@ const Chatbot = () => {
         }
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/start", {
+            const response = await fetch("https://collab-space-tit7.vercel.app/start", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ category })
@@ -50,7 +50,7 @@ const Chatbot = () => {
         }
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/answer", {
+            const response = await fetch("https://collab-space-tit7.vercel.app/answer", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -86,7 +86,6 @@ const Chatbot = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ category })
             });
-
             const data = await response.json();
             if (response.ok) {
                 setCurrentQuestion(data.question);
