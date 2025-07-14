@@ -2,15 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
+const path = require("path");
 const Papa = require("papaparse");
 
 const app = express();
-const PORT = 5000;
-
 app.use(cors());
 app.use(bodyParser.json());
 
-// Load skills from CSV file
 let SKILL_DATABASE = [];
 
 function loadSkillsFromCSV(filePath) {
@@ -19,20 +17,20 @@ function loadSkillsFromCSV(filePath) {
     header: true,
     skipEmptyLines: true
   });
-  SKILL_DATABASE = parsed.data.map(row => row.skill?.toLowerCase().trim()).filter(Boolean);
+  SKILL_DATABASE = parsed.data
+    .map(row => row.skill?.toLowerCase().trim())
+    .filter(Boolean);
   console.log(`✅ Loaded ${SKILL_DATABASE.length} skills from CSV.`);
 }
 
-// Call the loader at startup
-loadSkillsFromCSV("skills.csv");
+const filePath = path.join(__dirname, "skills.csv");
+loadSkillsFromCSV(filePath);
 
-// Extract skills from input text
 function extractSkills(text) {
   const lowerText = text.toLowerCase();
   return SKILL_DATABASE.filter(skill => lowerText.includes(skill));
 }
 
-// Resume vs Job Description Matching API
 app.post("/api/analyze-resume", (req, res) => {
   const { resume_text, job_description } = req.body;
 
@@ -68,6 +66,5 @@ app.post("/api/analyze-resume", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Don't use app.listen — instead export the handler
+module.exports = app;
