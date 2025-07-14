@@ -57,7 +57,7 @@ const ResumeATS = () => {
         body: JSON.stringify({ job_description: jobDescription, resume_text: resume }),
       });
 
-      if (!response.ok) throw new Error("Failed to analyze. Try again.");
+      if (!response.ok) throw new Error("Failed to analyze. Try again due to eroor.");
       const result = await response.json();
       setAnalysisResult(result);
     } catch (err) {
