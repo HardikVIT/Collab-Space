@@ -1,154 +1,153 @@
 import React, { useState, useEffect } from "react";
-import './chatbot.css';
+import axios from "axios";
+
+const API_BASE = "http://localhost:5000"; 
+
 const Chatbot = () => {
-    const [categories, setCategories] = useState([]);  // Store available categories
-    const [category, setCategory] = useState("");      // Store selected category
-    const [sessionId, setSessionId] = useState(null);
-    const [currentQuestion, setCurrentQuestion] = useState(null);
-    const [userAnswer, setUserAnswer] = useState("");
-    const [feedback, setFeedback] = useState("");
-    const [similarityScore, setSimilarityScore] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [questionData, setQuestionData] = useState(null);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [askedQuestions, setAskedQuestions] = useState([]);
+  const [feedback, setFeedback] = useState(null);
+  const [previousQuestionIdx, setPreviousQuestionIdx] = useState(null);
+  const [error, setError] = useState("");
 
-    // Fetch categories from backend (Replace with actual categories if static)
-    useEffect(() => {
-        setCategories(['General Programming', 'General Program', 'Data Structures', 'Languages and Frameworks', 'Database and SQL', 'Web Development', 'Software Testing', 'Version Control', 'System Design', 'Security', 'DevOps', 'Front-end', 'Back-end', 'Full-stack', 'Algorithms', 'Machine Learning', 'Distributed Systems', 'Networking', 'Low-level Systems', 'Database Systems', 'Data Engineering', 'Artificial Intelligence']);  // Replace with actual categories from backend
-    }, []);
+  useEffect(() => {
+    axios.get(`http://localhost:5000/categories`)
+      .then(res => {
+        setCategories(res.data.categories || []);
+        setError("");
+      })
+      .catch(err => {
+        console.error("Error fetching categories:", err);
+        setError("❌ Failed to load categories. Make sure backend is running.");
+      });
+  }, []);
 
-    // Function to start interview
-    const startInterview = async () => {
-        if (!category) {
-            alert("Please select a category first!");
-            return;
-        }
+  const startInterview = async () => {
+    try {
+      setFeedback(null);
+      const res = await axios.post(`${API_BASE}/question`, {
+        category: selectedCategory,
+        asked_questions: askedQuestions,
+        previous_question_idx: previousQuestionIdx,
+      });
+      setQuestionData(res.data);
+      setPreviousQuestionIdx(res.data.question_idx);
+      setAskedQuestions(prev => [...prev, res.data.question_idx]);
+      setUserAnswer("");
+      setError("");
+    } catch (err) {
+      console.error("Interview error:", err);
+      setError("❌ Failed to start interview. Check your server connection.");
+    }
+  };
 
-        try {
-            const response = await fetch("https://collab-space-tit7.vercel.app/start", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ category })
-            });
+  const submitAnswer = async () => {
+    try {
+      const res = await axios.post(`${API_BASE}/evaluate`, {
+        user_input: userAnswer,
+        correct_answer: questionData.answer,
+        question_idx: questionData.question_idx,
+      });
+      setFeedback(res.data);
+      setError("");
+    } catch (err) {
+      console.error("Evaluation error:", err);
+      setError("❌ Could not evaluate answer. Try again.");
+    }
+  };
 
-            const data = await response.json();
-            if (response.ok) {
-                setSessionId(data.session_id);
-                setCurrentQuestion(data.question);
-                setFeedback(""); // Reset feedback when starting
-                setSimilarityScore(null);
-            } else {
-                console.error("Error:", data.detail);
-            }
-        } catch (error) {
-            console.error("Failed to start interview:", error);
-        }
-    };
+  return (
+    <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-md space-y-4">
+      <h1 className="text-2xl font-bold">🧠 Interview Bot</h1>
 
-    // Function to submit answer
-    const submitAnswer = async () => {
-        if (!userAnswer.trim()) {
-            alert("Please enter an answer!");
-            return;
-        }
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>
+      )}
 
-        try {
-            const response = await fetch("https://collab-space-tit7.vercel.app/answer", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    session_id: sessionId,
-                    user_answer: userAnswer
-                })
-            });
+      {/* Category Selection */}
+      <div>
+        <label className="block font-semibold mb-2">Select Category:</label>
+        <select
+          className="border p-2 w-full"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+            <option value="">-- Choose a Category --</option>
+            <option value="General Programming">General Programming</option>
+            <option value="Data Structures">Data Structures</option>
+            <option value="Languages and Frameworks">Languages and Frameworks</option>
+            <option value="Database and SQL">Database and SQL</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Software Testing">Software Testing</option>
+            <option value="Version Control">Version Control</option>
+            <option value="System Design">System Design</option>
+            <option value="Security">Security</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Front-end">Front-end</option>
+            <option value="Back-end">Back-end</option>
+            <option value="Full-stack">Full-stack</option>
+            <option value="Algorithms">Algorithms</option>
+            <option value="Machine Learning">Machine Learning</option>
+            <option value="Distributed Systems">Distributed Systems</option>
+            <option value="Networking">Networking</option>
+            <option value="Low-level Systems">Low-level Systems</option>
+            <option value="Database Systems">Database Systems</option>
+            <option value="Data Engineering">Data Engineering</option>
+            <option value="Artificial Intelligence">Artificial Intelligence</option>
 
-            const data = await response.json();
-            if (response.ok) {
-                setFeedback(data.feedback);
-                setSimilarityScore(data.similarity_score);
-                setCurrentQuestion(data.next_question);
-                setUserAnswer("");  // Clear input field
-            } else {
-                console.error("Error:", data.detail);
-            }
-        } catch (error) {
-            console.error("Failed to submit answer:", error);
-        }
-    };
+          {categories.map((cat, idx) => (
+            <option key={idx} value={cat}>{cat}</option>
+          ))}
+        </select>
 
-    // Function to skip to the next question
-    const nextQuestion = async () => {
-        if (!sessionId) {
-            alert("Please start the interview first!");
-            return;
-        }
+        <button
+          className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          onClick={startInterview}
+          disabled={!selectedCategory}
+        >
+          Start / Next Question
+        </button>
+      </div>
 
-        try {
-            const response = await fetch("https://collab-space-tit7.vercel.app/start", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ category })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                setCurrentQuestion(data.question);
-                setUserAnswer("");
-                setFeedback("");
-                setSimilarityScore(null);
-            } else {
-                console.error("Error:", data.detail);
-            }
-        } catch (error) {
-            console.error("Failed to fetch next question:", error);
-        }
-    };
+      {/* Question Display */}
+      {questionData && (
+        <div className="mt-4">
+          <h2 className="font-semibold text-lg">Question:</h2>
+          <p className="mb-2">{questionData.question}</p>
 
-    return (
-        <div className="chatbot-container" style={{ maxWidth: "500px", margin: "auto", textAlign: "center" }}>
-            <div className="Headingg">
-                <h1>Interview Chatbot</h1>
-            </div>
+          <textarea
+            className="border w-full p-2 mt-2"
+            rows={4}
+            placeholder="Type your answer here..."
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+          />
 
-            {/* Category Selection */}
-            <div className="chatbot-category">
-                <label>Select Category:</label>
-                <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="">-- Select --</option>
-                    {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                </select>
-            </div>
-
-            <br />
-
-            {/* Start Interview Button */}
-            <button className="chatbot-button" onClick={startInterview}>Start Interview</button>
-
-            {/* Display Question */}
-            {currentQuestion && (
-                <div className="chatbot-question">
-                    <h3>Question: {currentQuestion}</h3>
-                    <textarea className="chatbot-textarea"
-                        value={userAnswer}
-                        onChange={(e) => setUserAnswer(e.target.value)}
-                        placeholder="Type your answer here..."
-                        rows="4"
-                        cols="50"
-                    />
-                    <br />
-                    <button className="chatbot-button" onClick={submitAnswer}>Submit Answer</button>
-                    <button className="chatbot-button" onClick={nextQuestion} style={{ marginLeft: "10px" }}>Next Question</button>
-                </div>
-            )}
-
-            {/* Feedback Section */}
-            {feedback && (
-                <div className="chatbot-feedback">
-                    <h3>Feedback:</h3>
-                    <p>{feedback}</p>
-                    <p className="chatbot-score">Similarity Score: {similarityScore?.toFixed(2)}</p>
-                </div>
-            )}
+          <button
+            className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+            onClick={submitAnswer}
+            disabled={!userAnswer.trim()}
+          >
+            Submit Answer
+          </button>
         </div>
-    );
+      )}
+
+      {/* Feedback Section */}
+      {feedback && (
+        <div className="mt-4 p-4 bg-gray-100 border rounded">
+          <h3 className="font-semibold mb-1">🔍 Feedback:</h3>
+          <p className="mb-2">{feedback.feedback}</p>
+          <p className="text-sm text-gray-600">
+            Similarity Score: {(feedback.similarity * 100).toFixed(2)}%
+          </p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Chatbot;

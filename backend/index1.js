@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-// const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 const { type } = require("os");
@@ -14,11 +13,7 @@ const { error } = require("console");
 app.use(express.json()); //response will auto pass thorugh json
 app.use(cors()); //react will connect using on the prot
 
-app.use(
-      cors({
-          origin : "http://localhost:3000"
-      })
-)
+
 const Users=mongoose.model('Users',{
       name:{
             type:String
