@@ -4,22 +4,18 @@ const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 const Papa = require("papaparse");
-
 const app = express();
-app.use(bodyParser.json());
-
-let SKILL_DATABASE = [];
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const { type } = require("os");
 const { request } = require("http");
 const { error } = require("console");
 
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors()); 
 
-app.use(express.json()); //response will auto pass thorugh json
-app.use(cors()); //react will connect using on the prot
-
-
+let SKILL_DATABASE = [];
 const Users=mongoose.model('Users',{
       name:{
             type:String
