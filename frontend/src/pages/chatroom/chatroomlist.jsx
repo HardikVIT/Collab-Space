@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./chatroom.css";
 
-const socket = io("https://collab-space-chatroom.vercel.app/");
+const socket = io("https://collab-space-chatroom.vercel.app");
 
 const ChatRoomsList = ({ onJoinRoom }) => {
     const [rooms, setRooms] = useState([]);
