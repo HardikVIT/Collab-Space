@@ -6,7 +6,6 @@ const path = require("path");
 const Papa = require("papaparse");
 
 const app = express();
-app.use(cors());
 app.use(bodyParser.json());
 
 let SKILL_DATABASE = [];
