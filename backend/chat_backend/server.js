@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://collab-space-pink.vercel.app/", // Allow frontend
+        origin: "*", // Allow frontend
         methods: ["GET", "POST"]
     }
 });
@@ -81,4 +81,4 @@ io.on("connection", async (socket) => {
 });
 
 // Start server
-server.listen(4000, () => console.log("Server running on port 4000"));
+module.exports = server;
