@@ -1,8 +1,10 @@
 flask
 flask-cors
+python-dotenv
 numpy
 pandas
-python-dotenv
 langchain
 langchain-community
 langchain-groq
+langchain-openai
+openai
