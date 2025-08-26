@@ -76,7 +76,7 @@ io.on("connection", async (socket) => {
     });
     socket.on("screenShare", ({ room, sender, screenData }) => {
         // Broadcast to everyone else in room
-        socket.to(room).emit("SS", { sender, screenData });
+        io.to(room).emit("SS", { sender, screenData });
     });
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);

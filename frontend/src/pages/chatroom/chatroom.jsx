@@ -121,19 +121,8 @@ const ChatRoom = ({ room, onLeave }) => {
                     Share Screen
                 </button>
 
-                {/* Local preview */}
-                {stream && (
-                    <video
-                        ref={localRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        className="mt-2 w-full max-h-64 border rounded-lg shadow"
-                    />
-                )}
-
                 {/* 🔹 Remote shared screen area */}
-                <div className="mt-4 border-2 border-green-500 rounded-lg shadow">
+                <div className="sss">
                     <h2 className="text-center font-semibold p-1 bg-green-100">Shared Screen</h2>
                     <img
                         ref={remoteRef}
