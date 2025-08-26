@@ -1,7 +1,8 @@
-flask==3.1.1
-langchain==0.3.26
-langchain-community==0.3.27
-langchain-groq==0.3.6
-pandas==2.3.1
-sentence-transformers==5.0.0
-torch==2.7.1
+flask
+flask-cors
+numpy
+pandas
+python-dotenv
+langchain
+langchain-community
+langchain-groq

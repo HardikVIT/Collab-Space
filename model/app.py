@@ -1,14 +1,12 @@
 from flask import Flask, request, jsonify
 import os
-import torch
 import numpy as np
 import pandas as pd
 import random
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
 from langchain_community.document_loaders import DataFrameLoader
-from langchain_groq import ChatGroq
-from langchain.schema import SystemMessage, HumanMessage, AIMessage
+from langchain_groq import ChatGroq, GroqEmbeddings
+from langchain.schema import SystemMessage, HumanMessage
 from flask_cors import CORS
 
 
@@ -20,10 +18,13 @@ app = Flask(__name__)
 CORS(app) 
 
 load_dotenv()
-device = "cuda" if torch.cuda.is_available() else "cpu"
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2').to(device)
 groq_api_key = os.getenv("GROQ_API_KEY")
+
+# Use Groq Chat model
 chat_model = ChatGroq(model="mistral-saba-24b", api_key=groq_api_key)
+
+# Use Groq Embeddings
+embedding_model = GroqEmbeddings(model="nomic-embed-text", api_key=groq_api_key)
 
 df = pd.read_csv('Software-Questions.csv', encoding='ISO-8859-1')
 loader = DataFrameLoader(df, page_content_column="Question")
@@ -36,9 +37,25 @@ for doc in questions:
     category = doc.metadata["Category"]
     questions_by_category[category].append(doc)
 
-question_embeddings = np.load('question_embeddings.npy')
-answer_embeddings = np.load('answer_embeddings.npy')
-category_embeddings = np.load('category_embeddings.npy')
+# Generate embeddings with Groq API (instead of SentenceTransformer)
+if not os.path.exists("question_embeddings.npy"):
+    question_embeddings = np.array(embedding_model.embed_documents(questions_text))
+    np.save("question_embeddings.npy", question_embeddings)
+else:
+    question_embeddings = np.load("question_embeddings.npy")
+
+if not os.path.exists("answer_embeddings.npy"):
+    answer_embeddings = np.array(embedding_model.embed_documents(answers_text))
+    np.save("answer_embeddings.npy", answer_embeddings)
+else:
+    answer_embeddings = np.load("answer_embeddings.npy")
+
+if not os.path.exists("category_embeddings.npy"):
+    category_embeddings = np.array(embedding_model.embed_documents(categories))
+    np.save("category_embeddings.npy", category_embeddings)
+else:
+    category_embeddings = np.load("category_embeddings.npy")
+
 
 # =========================
 # Utility Functions
@@ -103,11 +120,17 @@ def evaluate_answer():
     user_input = data.get('user_input')
     correct_answer = data.get('correct_answer')
     question_idx = data.get('question_idx')
-    user_response_embedding = embedding_model.encode(user_input)
+    
+    # Get embeddings from Groq API
+    user_response_embedding = np.array(embedding_model.embed_query(user_input))
     expected_answer_embedding = answer_embeddings[question_idx]
+    
     similarity = cosine_similarity(user_response_embedding, expected_answer_embedding)
     feedback = generate_response(user_input, correct_answer)
     return jsonify({
         'similarity': similarity,
         'feedback': feedback
     })
+
+if __name__ == '__main__':
+    app.run(debug=True)
