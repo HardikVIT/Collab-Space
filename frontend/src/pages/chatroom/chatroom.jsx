@@ -92,6 +92,19 @@ const ChatRoom = ({ room, onLeave }) => {
             console.error("Error sharing screen:", err);
         }
     };
+    socket.on("screenShare", ({ sender, screenData }) => {
+        if (sender !== socket.id && remoteVideoRef.current) {
+            remoteVideoRef.current.src = screenData; // base64 video frame
+        }
+    });
+
+    // Receive remote screen share (broadcast event)
+    socket.on("SS", ({ sender, screenData }) => {
+        if (sender !== socket.id && remoteVideoRef.current) {
+            remoteVideoRef.current.src = screenData;
+        }
+    });
+
 
     return (
         <div>
