@@ -1,10 +1,4 @@
 flask
 flask-cors
 python-dotenv
-numpy
-pandas
-langchain
-langchain-community
-langchain-groq
-langchain-openai
-openai
+requests
