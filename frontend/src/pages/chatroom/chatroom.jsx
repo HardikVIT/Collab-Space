@@ -26,8 +26,8 @@ const ChatRoom = ({ room, onLeave }) => {
 
         // receive remote screen frames
         socket.on("SS", ({ sender, screenData }) => {
-            if (sender !== socket.id && remoteVideoRef.current) {
-                remoteVideoRef.current.src = screenData; 
+            if (remoteRef.current) {
+                remoteRef.current.src = screenData; 
             }
         });
 
@@ -113,33 +113,13 @@ const ChatRoom = ({ room, onLeave }) => {
                 ))}
             </div>
 
-            <div className="screen-share mt-4">
-                <button
-                    onClick={startScreenShare}
-                    className="p-2 bg-blue-500 text-white rounded-lg"
-                >
+            <div className="screen-share">
+                <button onClick={startScreenShare} className="btn">
                     Share Screen
                 </button>
-
-                {/* Local preview */}
-                {stream && (
-                    <video
-                        ref={localRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        className="mt-2 w-full max-h-64 border rounded-lg shadow"
-                    />
-                )}
-
-                {/* 🔹 Remote shared screen area */}
-                <div className="mt-4 border-2 border-green-500 rounded-lg shadow">
-                    <h2 className="text-center font-semibold p-1 bg-green-100">Shared Screen</h2>
-                    <img
-                        ref={remoteRef}
-                        alt="Remote Screen"
-                        className="w-full max-h-96 object-contain"
-                    />
+                <div className="remote-screen">
+                    <h2>Shared Screen</h2>
+                    <img ref={remoteRef} alt="Remote Screen" className="remote-video" />
                 </div>
             </div>
 
