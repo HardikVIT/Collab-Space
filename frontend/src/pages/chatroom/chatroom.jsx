@@ -42,6 +42,7 @@ const ChatRoom = ({ room, onLeave }) => {
     // start screen sharing
     const startScreenShare = async () => {
         try {
+            alert("screen share started");
             const screenStream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
                 audio: false,
