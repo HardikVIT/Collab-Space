@@ -68,9 +68,10 @@ const ChatRoom = ({ room, onLeave }) => {
                     const ctx = canvas.getContext("2d");
                     ctx.drawImage(bitmap, 0, 0);
                     const base64 = canvas.toDataURL("image/webp", 0.3);
-
+                    alert("screen is shared");
                     socket.emit("screenShare", { room, sender: socket.id, screenData: base64 });
                 } catch (err) {
+                    alert("No");
                     console.error("Frame capture error:", err);
                 }
 
