@@ -74,13 +74,10 @@ io.on("connection", async (socket) => {
         // Save to MongoDB
         await new Message({ room, sender: socket.id, text: message }).save();
     });
-    // ✅ Handle screen sharing
     socket.on("screenShare", ({ room, sender, screenData }) => {
-        // Broadcast to all users in the same room (including sender if needed)
-        io.to(room).emit("SS", { sender, screenData });
+        // Broadcast to everyone else in room
+        socket.to(room).emit("SS", { sender, screenData });
     });
-
-
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });

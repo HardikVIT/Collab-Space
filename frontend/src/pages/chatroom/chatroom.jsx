@@ -3,17 +3,19 @@ import { io } from "socket.io-client";
 import "./chatroom.css";
 
 const socket = io("https://collab-space-chatroom.vercel.app");
-
 const ChatRoom = ({ room, onLeave }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [stream, setStream] = useState(null);
-    const videoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
+
+    const videoRef = useRef(null);        // local screen
+    const remoteVideoRef = useRef(null);  // remote shared screen
 
     useEffect(() => {
+        // join room
         socket.emit("joinRoom", room);
 
+        // incoming chat messages
         socket.on("message", (msg) => {
             setMessages((prev) => [...prev, msg]);
         });
@@ -22,10 +24,10 @@ const ChatRoom = ({ room, onLeave }) => {
             setMessages(history);
         });
 
-        // Receive remote screen share
-        socket.on("screenShare", ({ sender, screenData }) => {
+        // receive remote screen frames
+        socket.on("SS", ({ sender, screenData }) => {
             if (sender !== socket.id && remoteVideoRef.current) {
-                remoteVideoRef.current.src = screenData; // base64 video frame
+                remoteVideoRef.current.src = screenData; 
             }
         });
 
@@ -33,17 +35,11 @@ const ChatRoom = ({ room, onLeave }) => {
             socket.emit("leaveRoom", room);
             socket.off("message");
             socket.off("chatHistory");
-            socket.off("screenShare");
+            socket.off("SS");
         };
     }, [room]);
 
-    const sendMessage = () => {
-        if (message.trim()) {
-            socket.emit("chatMessage", { room, message });
-            setMessage("");
-        }
-    };
-
+    // start screen sharing
     const startScreenShare = async () => {
         try {
             const screenStream = await navigator.mediaDevices.getDisplayMedia({
@@ -57,12 +53,12 @@ const ChatRoom = ({ room, onLeave }) => {
                 videoRef.current.srcObject = screenStream;
             }
 
-            // Capture frames & emit via socket
+            // continuously send frames
             const track = screenStream.getVideoTracks()[0];
             const imageCapture = new ImageCapture(track);
 
             const sendFrame = async () => {
-                if (!track.readyState || track.readyState === "ended") return;
+                if (track.readyState === "ended") return;
 
                 try {
                     const bitmap = await imageCapture.grabFrame();
@@ -83,8 +79,8 @@ const ChatRoom = ({ room, onLeave }) => {
 
             sendFrame();
 
-            // Stop handler
-            screenStream.getTracks().forEach(track => {
+            // cleanup when screen share stops
+            screenStream.getTracks().forEach((track) => {
                 track.onended = () => setStream(null);
             });
 
@@ -92,19 +88,13 @@ const ChatRoom = ({ room, onLeave }) => {
             console.error("Error sharing screen:", err);
         }
     };
-    socket.on("screenShare", ({ sender, screenData }) => {
-        if (sender !== socket.id && remoteVideoRef.current) {
-            remoteVideoRef.current.src = screenData; // base64 video frame
-        }
-    });
 
-    // Receive remote screen share (broadcast event)
-    socket.on("SS", ({ sender, screenData }) => {
-        if (sender !== socket.id && remoteVideoRef.current) {
-            remoteVideoRef.current.src = screenData;
+    const sendMessage = () => {
+        if (message.trim()) {
+            socket.emit("chatMessage", { room, message });
+            setMessage("");
         }
-    });
-
+    };
 
     return (
         <div>
@@ -121,31 +111,34 @@ const ChatRoom = ({ room, onLeave }) => {
                 ))}
             </div>
 
-            {/* Screen Share Section */}
             <div className="screen-share mt-4">
-                <button 
-                    onClick={startScreenShare} 
+                <button
+                    onClick={startScreenShare}
                     className="p-2 bg-blue-500 text-white rounded-lg"
                 >
                     Share Screen
                 </button>
 
+                {/* Local preview */}
                 {stream && (
-                    <video 
-                        ref={videoRef} 
-                        autoPlay 
-                        playsInline 
-                        className="mt-2 w-full max-h-96 border rounded-lg shadow"
+                    <video
+                        ref={localRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className="mt-2 w-full max-h-64 border rounded-lg shadow"
                     />
                 )}
 
-                {/* Remote shared screen */}
-                <video 
-                    ref={remoteVideoRef} 
-                    autoPlay 
-                    playsInline 
-                    className="mt-2 w-full max-h-96 border-2 border-green-500 rounded-lg shadow"
-                />
+                {/* 🔹 Remote shared screen area */}
+                <div className="mt-4 border-2 border-green-500 rounded-lg shadow">
+                    <h2 className="text-center font-semibold p-1 bg-green-100">Shared Screen</h2>
+                    <img
+                        ref={remoteRef}
+                        alt="Remote Screen"
+                        className="w-full max-h-96 object-contain"
+                    />
+                </div>
             </div>
 
             <div className="chat-input-container">
