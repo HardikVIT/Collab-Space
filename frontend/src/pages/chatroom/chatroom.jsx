@@ -6,10 +6,7 @@ const socket = io("https://collab-space-chatroom.vercel.app");
 const ChatRoom = ({ room, onLeave }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const [stream, setStream] = useState(null);
 
-    const videoRef = useRef(null);        // local screen
-    const remoteRef = useRef(null);  // remote shared screen
 
     useEffect(() => {
         // join room
@@ -23,62 +20,13 @@ const ChatRoom = ({ room, onLeave }) => {
             setMessages(history);
         });
 
-        // receive remote screen frames
-        socket.on("SS", ({ screenData }) => {
-            if (remoteRef.current) {
-            remoteRef.current.src = screenData; // update image each frame
-            }
-        });
 
         return () => {
             socket.emit("leaveRoom", room);
             socket.off("message");
             socket.off("chatHistory");
-            socket.off("SS");
         };
     }, [room]);
-
-    // start screen sharing
-    const startScreenShare = async () => {
-        try {
-            const screenStream = await navigator.mediaDevices.getDisplayMedia({
-                video: true,
-                audio: false,
-            });
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = screenStream; // local preview
-            }
-
-            const track = screenStream.getVideoTracks()[0];
-            const imageCapture = new ImageCapture(track);
-
-            const sendFrame = async () => {
-            if (track.readyState === "ended") return;
-
-            try {
-                const bitmap = await imageCapture.grabFrame();
-                const canvas = document.createElement("canvas");
-                canvas.width = bitmap.width;
-                canvas.height = bitmap.height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(bitmap, 0, 0);
-                const base64 = canvas.toDataURL("image/webp", 0.4);
-
-                socket.emit("screenShare", { room, screenData: base64 });
-            } catch (err) {
-                console.error("Frame capture error:", err);
-            }
-
-            requestAnimationFrame(sendFrame);
-            };
-
-            sendFrame();
-        } catch (err) {
-            console.error("Error sharing screen:", err);
-        }
-    };
-
 
     const sendMessage = () => {
         if (message.trim()) {
