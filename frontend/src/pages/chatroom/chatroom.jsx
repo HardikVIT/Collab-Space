@@ -25,51 +25,17 @@ const ChatRoom = ({ room, onLeave }) => {
     socket.on("chatHistory", (history) => {
       setMessages(history);
     });
-    socket.on("offer", async (offer) => {
-        if (!pcRef.current) {
-            pcRef.current = new RTCPeerConnection();
-
-            pcRef.current.onicecandidate = (event) => {
-                if (event.candidate) {
-                socket.emit("iceCandidate", { room, candidate: event.candidate });
-                }
-            };
-
-            // When remote track is received, play it
-            pcRef.current.ontrack = (event) => {
-                if (remoteVideoRef.current) {
-                remoteVideoRef.current.srcObject = event.streams[0];
-                }
-            };
-        }
-
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(offer));
-
-        const answer = await pcRef.current.createAnswer();
-        await pcRef.current.setLocalDescription(answer);
-
-        socket.emit("answer", { room, answer });
-    });
-
-    socket.on("answer", async (answer) => {
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-    });
-
-    socket.on("iceCandidate", async (candidate) => {
-        try {
-        await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-        } catch (err) {
-        console.error("Error adding ICE candidate", err);
+    socket.on("every", (stream) => {
+        if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
         }
     });
 
     return () => {
-        socket.emit("leaveRoom", room);
-        socket.off("message");
-        socket.off("chatHistory");
-        socket.off("offer");
-        socket.off("answer");
-        socket.off("iceCandidate");
+      socket.emit("leaveRoom", room);
+      socket.off("message");
+      socket.off("chatHistory");
+      socket.off("every");
     };
   }, [room]);
 
@@ -80,36 +46,18 @@ const ChatRoom = ({ room, onLeave }) => {
     }
   };
 
+  // -------------------------------
+  // Screen share handling
+  // -------------------------------
+
   const startScreenShare = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
 
     if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
+      localVideoRef.current.srcObject = stream;
     }
 
-    // Create RTCPeerConnection if not already
-    if (!pcRef.current) {
-        pcRef.current = new RTCPeerConnection();
-        
-        // Send ICE candidates to backend
-        pcRef.current.onicecandidate = (event) => {
-        if (event.candidate) {
-            socket.emit("iceCandidate", { room, candidate: event.candidate });
-        }
-        };
-
-        // Add track to connection
-        stream.getTracks().forEach(track => {
-        pcRef.current.addTrack(track, stream);
-        });
-    }
-
-    // Create an offer
-    const offer = await pcRef.current.createOffer();
-    await pcRef.current.setLocalDescription(offer);
-
-    // Send offer to backend
-    socket.emit("offer", { room, offer });
+    socket.emit("startShare",room, stream);
   };
   // -------------------------------
   // Render UI

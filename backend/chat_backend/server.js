@@ -3,7 +3,6 @@ const http = require("http");
 const mongoose = require("mongoose");
 const { Server } = require("socket.io");
 const cors = require("cors");
-const { isObject } = require("util");
 
 // Initialize Express app
 const app = express();
@@ -78,16 +77,9 @@ io.on("connection", async (socket) => {
 
     // -----------------------------s
     // WebRTC Screen Share Events
-    socket.on("offer", ({ room, offer }) => {
-        socket.to(room).emit("offer", offer);
-    });
-
-    socket.on("answer", ({ room, answer }) => {
-        socket.to(room).emit("answer", answer);
-    });
-
-    socket.on("iceCandidate", ({ room, candidate }) => {
-        socket.to(room).emit("iceCandidate", candidate);
+    // -----------------------------
+    socket.on("startShare", async ({room,stream}) => {
+        io.to(room).emit("every", stream);
     });
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
