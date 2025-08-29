@@ -75,10 +75,10 @@ io.on("connection", async (socket) => {
         await new Message({ room, sender: socket.id, text: message }).save();
     });
 
-    // -----------------------------
+    // -----------------------------s
     // WebRTC Screen Share Events
     // -----------------------------
-    socket.on("startShare", (room,stream) => {
+    socket.on("startShare", async ({room,stream}) => {
         io.to(room).emit("every", stream);
     });
     socket.on("disconnect", () => {

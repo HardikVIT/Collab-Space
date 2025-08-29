@@ -52,8 +52,7 @@ const ChatRoom = ({ room, onLeave }) => {
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
     }
-
-    socket.emit("startShare",{room, stream});
+    socket.emit("startShare", {room, stream});
   };
   // -------------------------------
   // Render UI
