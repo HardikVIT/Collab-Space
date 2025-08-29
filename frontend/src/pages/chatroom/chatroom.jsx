@@ -44,7 +44,7 @@ const ChatRoom = ({ room, onLeave }) => {
   // Screen share handling
   // -------------------------------
   useEffect(() => {
-    socket.on("evry", (stream) => {
+    socket.on("every", (stream) => {
         if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
         }
