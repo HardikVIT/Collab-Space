@@ -25,11 +25,17 @@ const ChatRoom = ({ room, onLeave }) => {
     socket.on("chatHistory", (history) => {
       setMessages(history);
     });
+    socket.on("every", (stream) => {
+        if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+        }
+    });
 
     return () => {
       socket.emit("leaveRoom", room);
       socket.off("message");
       socket.off("chatHistory");
+      socket.off("every");
     };
   }, [room]);
 
@@ -40,21 +46,6 @@ const ChatRoom = ({ room, onLeave }) => {
     }
   };
 
-  // -------------------------------
-  // Screen share handling
-  // -------------------------------
-  useEffect(() => {
-    socket.on("every", (stream) => {
-        if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
-        }
-    });
-
-    return () => {
-      socket.off("every");
-    };
-  }, []);
-
   const startScreenShare = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
 
@@ -62,7 +53,7 @@ const ChatRoom = ({ room, onLeave }) => {
       localVideoRef.current.srcObject = stream;
     }
 
-    socket.emit("startShare",room, stream);
+    socket.emit("startShare",{room, stream});
   };
   // -------------------------------
   // Render UI
