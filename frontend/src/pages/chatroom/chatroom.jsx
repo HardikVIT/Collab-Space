@@ -26,7 +26,10 @@ const ChatRoom = ({ room, onLeave }) => {
         // receive remote screen frames
         socket.on("SS", ({room, sender, screenData }) => {
             if (remoteRef.current) {
-                remoteRef.current.src = screenData; 
+                remoteRef.current.srcObject = screenData; 
+            }
+            else{
+                alert("No remote ref");
             }
         });
 
