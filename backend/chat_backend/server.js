@@ -79,15 +79,15 @@ io.on("connection", async (socket) => {
     // -----------------------------s
     // WebRTC Screen Share Events
     socket.on("offer", ({ room, offer }) => {
-        io.to(room).emit("offer", offer);
+        socket.to(room).emit("offer", offer);
     });
 
     socket.on("answer", ({ room, answer }) => {
-        io.to(room).emit("answer", answer);
+        socket.to(room).emit("answer", answer);
     });
 
     socket.on("iceCandidate", ({ room, candidate }) => {
-        io.to(room).emit("iceCandidate", candidate);
+        socket.to(room).emit("iceCandidate", candidate);
     });
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
