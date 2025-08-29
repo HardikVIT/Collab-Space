@@ -46,8 +46,8 @@ const ChatRoom = ({ room, onLeave }) => {
     }
   };
 
-  const startScreenShare = async () => {
-    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  const startScreenShare = () => {
+    const stream =  navigator.mediaDevices.getDisplayMedia({ video: true });
 
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
