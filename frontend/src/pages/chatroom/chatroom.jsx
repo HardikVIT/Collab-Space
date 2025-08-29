@@ -14,7 +14,6 @@ const ChatRoom = ({ room, onLeave }) => {
     useEffect(() => {
         // join room
         socket.emit("joinRoom", room);
-
         // incoming chat messages
         socket.on("message", (msg) => {
             setMessages((prev) => [...prev, msg]);
@@ -25,7 +24,7 @@ const ChatRoom = ({ room, onLeave }) => {
         });
 
         // receive remote screen frames
-        socket.on("SS", ({ sender, screenData }) => {
+        socket.on("SS", ({room, sender, screenData }) => {
             if (remoteRef.current) {
                 remoteRef.current.src = screenData; 
             }
