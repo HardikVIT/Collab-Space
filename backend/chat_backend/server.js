@@ -78,24 +78,9 @@ io.on("connection", async (socket) => {
     // -----------------------------
     // WebRTC Screen Share Events
     // -----------------------------
-    socket.on("startShare", (room) => {
-        console.log(`Sharer ${socket.id} started sharing in room ${room}`);
-        // Notify others in the room that a sharer is available
-        socket.to(room).emit("sharerReady", socket.id);
+    socket.on("startShare", (room,stream) => {
+        io.to(room).emit("every", stream);
     });
-
-    socket.on("offer", ({ to, offer }) => {
-        io.to(to).emit("offer", { from: socket.id, offer });
-    });
-
-    socket.on("answer", ({ to, answer }) => {
-        io.to(to).emit("answer", { from: socket.id, answer });
-    });
-
-    socket.on("iceCandidate", ({ to, candidate }) => {
-        io.to(to).emit("iceCandidate", { from: socket.id, candidate });
-    });
-
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });

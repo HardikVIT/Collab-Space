@@ -44,56 +44,16 @@ const ChatRoom = ({ room, onLeave }) => {
   // Screen share handling
   // -------------------------------
   useEffect(() => {
-    socket.on("sharerReady", async (sharerId) => {
-      console.log("Sharer available:", sharerId);
-      await setupViewer(sharerId);
-    });
-
-    socket.on("offer", async ({ from, offer }) => {
-      if (!pcRef.current) initPeerConnection(from);
-
-      await pcRef.current.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pcRef.current.createAnswer();
-      await pcRef.current.setLocalDescription(answer);
-
-      socket.emit("answer", { to: from, answer });
-    });
-
-    socket.on("answer", async ({ answer }) => {
-      if (pcRef.current) {
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-      }
-    });
-
-    socket.on("iceCandidate", async ({ candidate }) => {
-      if (candidate && pcRef.current) {
-        await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-      }
+    socket.on("evry", (stream) => {
+        if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+        }
     });
 
     return () => {
-      socket.off("sharerReady");
-      socket.off("offer");
-      socket.off("answer");
-      socket.off("iceCandidate");
+      socket.off("every");
     };
   }, []);
-
-  const initPeerConnection = (remoteId) => {
-    pcRef.current = new RTCPeerConnection();
-
-    pcRef.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit("iceCandidate", { to: remoteId, candidate: event.candidate });
-      }
-    };
-
-    pcRef.current.ontrack = (event) => {
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = event.streams[0];
-      }
-    };
-  };
 
   const startScreenShare = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -102,23 +62,8 @@ const ChatRoom = ({ room, onLeave }) => {
       localVideoRef.current.srcObject = stream;
     }
 
-    socket.emit("startShare", room);
-
-    socket.on("sharerReady", async (viewerId) => {
-      initPeerConnection(viewerId);
-      stream.getTracks().forEach((track) => pcRef.current.addTrack(track, stream));
-
-      const offer = await pcRef.current.createOffer();
-      await pcRef.current.setLocalDescription(offer);
-
-      socket.emit("offer", { to: viewerId, offer });
-    });
+    socket.emit("startShare",room, stream);
   };
-
-  const setupViewer = async (sharerId) => {
-    initPeerConnection(sharerId);
-  };
-
   // -------------------------------
   // Render UI
   // -------------------------------
