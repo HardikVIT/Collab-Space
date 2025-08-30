@@ -335,7 +335,7 @@ const Chatbot = () => {
                 </button>
                 <button onClick={resetInterview} className="btn-secondary">
                   <span className="btn-icon">🔄</span>
-                  Start Over
+                  Change Category
                 </button>
               </div>
             </div>
