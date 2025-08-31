@@ -75,12 +75,29 @@ io.on("connection", async (socket) => {
         await new Message({ room, sender: socket.id, text: message }).save();
     });
 
-    // -----------------------------s
-    // WebRTC Screen Share Events
     // -----------------------------
-    socket.on("startShare", async ({room,stream}) => {
-        io.to(room).emit("every", stream);
+    // WebRTC Screen Share Events (ADDED)
+    // -----------------------------
+    socket.on("offer", ({ sdp, room }) => {
+        console.log(`Offer from ${socket.id} in room ${room}`);
+        socket.to(room).emit("offer", { sdp, from: socket.id });
     });
+
+    socket.on("answer", ({ sdp, to, room }) => {
+        console.log(`Answer from ${socket.id} to ${to} in room ${room}`);
+        io.to(to).emit("answer", { sdp, from: socket.id });
+    });
+
+    socket.on("ice-candidate", ({ candidate, room }) => {
+        console.log(`ICE candidate from ${socket.id} in room ${room}`);
+        socket.to(room).emit("ice-candidate", { candidate, from: socket.id });
+    });
+
+    // Old (your code) — DO NOT REMOVE
+    socket.on("startShare", async ({room,stream}) => {
+        io.to(room).emit("every", stream); // <-- will not work for real streams, kept because you asked not to remove
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });

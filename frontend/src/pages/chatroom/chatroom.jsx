@@ -11,13 +11,16 @@ const ChatRoom = ({ room, onLeave }) => {
   const localVideoRef = useRef(null);   // Sharer's video
   const remoteVideoRef = useRef(null);  // Viewer’s video
   const pcRef = useRef(null);
+  const [isHost, setIsHost] = useState(false);
 
   // -------------------------------
   // Chat handling
   // -------------------------------
   useEffect(() => {
+    // join room
     socket.emit("joinRoom", room);
 
+    // === Chat logic (same as before) ===
     socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -25,19 +28,59 @@ const ChatRoom = ({ room, onLeave }) => {
     socket.on("chatHistory", (history) => {
       setMessages(history);
     });
-    socket.on("every", (stream) => {
-        if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
+
+    // === WebRTC setup ===
+    pcRef.current = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
+
+    pcRef.current.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("ice-candidate", { candidate: event.candidate, room });
+      }
+    };
+
+    pcRef.current.ontrack = (event) => {
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      }
+    };
+
+    // Viewer receives offer
+    socket.on("offer", async ({ sdp, from }) => {
+      await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
+      const answer = await pcRef.current.createAnswer();
+      await pcRef.current.setLocalDescription(answer);
+      socket.emit("answer", { sdp: answer, to: from, room });
+    });
+
+    // Host receives answer
+    socket.on("answer", async ({ sdp }) => {
+      await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
+    });
+
+    // ICE candidates
+    socket.on("ice-candidate", async ({ candidate }) => {
+      if (candidate) {
+        try {
+          await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (err) {
+          console.error("Error adding ICE candidate", err);
         }
+      }
     });
 
     return () => {
       socket.emit("leaveRoom", room);
       socket.off("message");
       socket.off("chatHistory");
-      socket.off("every");
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice-candidate");
+      pcRef.current.close();
     };
   }, [room]);
+
 
   const sendMessage = () => {
     if (message.trim()) {
@@ -52,12 +95,11 @@ const ChatRoom = ({ room, onLeave }) => {
 
   const startScreenShare = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = stream;
-    }
-
-    socket.emit("startShare",room, stream);
+    localVideoRef.current.srcObject = stream;
+    stream.getTracks().forEach((track) => pcRef.current.addTrack(track, stream));
+    const offer = await pcRef.current.createOffer();
+    await pcRef.current.setLocalDescription(offer);
+    socket.emit("offer", { sdp: offer, to: "other" });
   };
   // -------------------------------
   // Render UI
