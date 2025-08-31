@@ -11,7 +11,7 @@ const ChatRoom = ({ room, onLeave }) => {
   const localVideoRef = useRef(null);   // Sharer's video
   const remoteVideoRef = useRef(null);  // Viewer’s video
   const pcRef = useRef(null);
-  const [isHost, setIsHost] = useState(false);
+
 
   // -------------------------------
   // Chat handling
@@ -20,7 +20,7 @@ const ChatRoom = ({ room, onLeave }) => {
     // join room
     socket.emit("joinRoom", room);
 
-    // === Chat logic (same as before) ===
+    // === Chat logic ===
     socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -65,7 +65,7 @@ const ChatRoom = ({ room, onLeave }) => {
         try {
           await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
         } catch (err) {
-          console.error("Error adding ICE candidate", err);
+          console.error("Error adding received ICE candidate", err);
         }
       }
     });
@@ -77,9 +77,13 @@ const ChatRoom = ({ room, onLeave }) => {
       socket.off("offer");
       socket.off("answer");
       socket.off("ice-candidate");
-      pcRef.current.close();
+      if (pcRef.current) {
+        pcRef.current.close();
+        pcRef.current = null;
+      }
     };
   }, [room]);
+
 
 
   const sendMessage = () => {
@@ -92,15 +96,20 @@ const ChatRoom = ({ room, onLeave }) => {
   // -------------------------------
   // Screen share handling
   // -------------------------------
-
   const startScreenShare = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
     localVideoRef.current.srcObject = stream;
+
+    // add stream tracks
     stream.getTracks().forEach((track) => pcRef.current.addTrack(track, stream));
+
+    // create & send offer
     const offer = await pcRef.current.createOffer();
     await pcRef.current.setLocalDescription(offer);
-    socket.emit("offer", { sdp: offer, to: "other" });
+
+    socket.emit("offer", { sdp: offer, room });
   };
+
   // -------------------------------
   // Render UI
   // -------------------------------
