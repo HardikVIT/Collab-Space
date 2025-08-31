@@ -2,29 +2,34 @@ import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import "./chatroom.css";
 
-const socket = io("https://collab-space-chatroom.vercel.app", {
-  transports: ["websocket"],
-});
+const socket = io("https://collab-space-chatroom.vercel.app");
 
 const ChatRoom = ({ room, onLeave }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [isSharing, setIsSharing] = useState(false);
 
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const localVideoRef = useRef(null);   // Sharer's video
+  const remoteVideoRef = useRef(null);  // Viewer’s video
   const pcRef = useRef(null);
-  const screenStreamRef = useRef(null);
+  const [isHost, setIsHost] = useState(false);
 
   // -------------------------------
-  // Chat + signaling
+  // Chat handling
   // -------------------------------
   useEffect(() => {
+    // join room
     socket.emit("joinRoom", room);
 
-    socket.on("message", (msg) => setMessages((prev) => [...prev, msg]));
-    socket.on("chatHistory", (history) => setMessages(history));
+    // === Chat logic (same as before) ===
+    socket.on("message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
 
+    socket.on("chatHistory", (history) => {
+      setMessages(history);
+    });
+
+    // === WebRTC setup ===
     pcRef.current = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
@@ -76,6 +81,7 @@ const ChatRoom = ({ room, onLeave }) => {
     };
   }, [room]);
 
+
   const sendMessage = () => {
     if (message.trim()) {
       socket.emit("chatMessage", { room, message });
@@ -84,50 +90,20 @@ const ChatRoom = ({ room, onLeave }) => {
   };
 
   // -------------------------------
-  // Screen share
+  // Screen share handling
   // -------------------------------
+
   const startScreenShare = async () => {
-    try {
-      const pc = pcRef.current;
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
-
-      screenStreamRef.current = stream;
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
-      }
-
-      const track = stream.getVideoTracks()[0];
-      pc.addTrack(track, stream);
-
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      socket.emit("offer", { sdp: offer, room });
-
-      // Auto-stop when user stops via browser UI
-      track.onended = () => stopScreenShare();
-
-      setIsSharing(true);
-    } catch (err) {
-      console.error("Error starting screen share", err);
-    }
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    localVideoRef.current.srcObject = stream;
+    stream.getTracks().forEach((track) => pcRef.current.addTrack(track, stream));
+    const offer = await pcRef.current.createOffer();
+    await pcRef.current.setLocalDescription(offer);
+    socket.emit("offer", { sdp: offer, to: "other" });
   };
-
-  const stopScreenShare = () => {
-    const pc = pcRef.current;
-    setIsSharing(false);
-
-    if (screenStreamRef.current) {
-      screenStreamRef.current.getTracks().forEach((t) => t.stop());
-      screenStreamRef.current = null;
-    }
-    if (localVideoRef.current) localVideoRef.current.srcObject = null;
-
-    // Remove senders with video track
-    pc.getSenders()
-      .filter((s) => s.track && s.track.kind === "video")
-      .forEach((s) => pc.removeTrack(s));
-  };
-
+  // -------------------------------
+  // Render UI
+  // -------------------------------
   return (
     <div>
       <div className="chat-room-title">
@@ -146,11 +122,7 @@ const ChatRoom = ({ room, onLeave }) => {
 
       <div>
         <h2>Screen Share</h2>
-        {!isSharing ? (
-          <button onClick={startScreenShare}>Start Screen Share</button>
-        ) : (
-          <button onClick={stopScreenShare}>Stop Screen Share</button>
-        )}
+        <button onClick={startScreenShare}>Start Screen Share</button>
 
         <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
           <video
@@ -175,7 +147,6 @@ const ChatRoom = ({ room, onLeave }) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message"
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <div className="send-message">
           <button onClick={sendMessage}>Send</button>
