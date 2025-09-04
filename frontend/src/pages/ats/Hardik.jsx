@@ -138,6 +138,14 @@ const ResumeATS = () => {
               ))}
             </div>
           )}
+          {analysisResult.resume_skills?.length > 0 && (
+            <div className="skill-box match">
+              <h3>✅ Resume Skills</h3>
+              {analysisResult.resumeSkills.map((skill, i) => (
+                <span key={i} className="skill-chip">{skill}</span>
+              ))}
+            </div>
+          )}
 
           {analysisResult.missing_skills?.length > 0 && (
             <div className="skill-box miss">

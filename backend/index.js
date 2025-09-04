@@ -138,6 +138,7 @@ app.post("/", (req, res) => {
     similarity_score: similarityScore,
     skills_matched: skillsMatched,
     total_skills_required: totalSkillsRequired,
+    resumeSkills: resumeSkills,
     matching_skills: matchingSkills,
     missing_skills: missingSkills
   });
