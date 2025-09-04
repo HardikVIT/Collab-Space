@@ -6,6 +6,12 @@
   overflow: hidden;
   color: white;
 }
+.ats-score-label {
+  font-size: 20px;
+  font-weight: bold;
+  fill: #fff; /* white text inside donut */
+}
+
 /* ATS Results Main Wrapper */
 .ats-results {
   margin-top: 2rem;
