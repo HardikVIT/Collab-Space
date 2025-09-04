@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import "./ResumeATS.css";
+import mammoth from "mammoth";
 
 const ResumeATS = () => {
   const [jobDescription, setJobDescription] = useState("");
@@ -20,16 +21,25 @@ const ResumeATS = () => {
     }
 
     setFileName(file.name);
+
     const reader = new FileReader();
-    reader.onload = (event) => {
-      alert("File uploaded successfully!");
-      const text = event.target.result;
-      setResume(text);
-      console.log(text);
-      setError(null);
+    reader.onload = async (event) => {
+      try {
+        alert("File uploaded successfully!");
+        const arrayBuffer = event.target.result;
+
+        // Extract text from .docx
+        const { value } = await mammoth.extractRawText({ arrayBuffer });
+
+        setResume(value);
+        console.log(value);
+        setError(null);
+      } catch (err) {
+        setError("Error extracting text from DOCX.");
+      }
     };
     reader.onerror = () => setError("Error reading file.");
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);  // ✅ changed from readAsText to readAsArrayBuffer
   };
 
   const handleClear = () => {
