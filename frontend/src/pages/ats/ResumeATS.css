@@ -1,207 +1,244 @@
 /* Background */
-.ats-page {
+.ats-container {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #0f172a, #581c87, #0f172a);
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(to bottom right, #0f172a, #4c1d95, #0f172a);
   color: white;
+  font-family: "Segoe UI", sans-serif;
+  position: relative;
 }
 
-.ats-background .bg-circle {
+.bg-blobs .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(120px);
   opacity: 0.2;
-  animation: pulse 6s infinite;
+  animation: pulse 6s infinite alternate;
 }
 
-.bg-circle.purple {
+.blob.purple {
   top: -100px;
   right: -100px;
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   background: #a855f7;
 }
 
-.bg-circle.cyan {
+.blob.cyan {
   bottom: -100px;
   left: -100px;
-  width: 200px;
-  height: 200px;
-  background: #06b6d4;
-  animation-delay: 2s;
+  width: 300px;
+  height: 300px;
+  background: #22d3ee;
 }
 
-.bg-circle.indigo {
+.blob.indigo {
   top: 40%;
   left: 40%;
-  width: 250px;
-  height: 250px;
+  width: 350px;
+  height: 350px;
   background: #6366f1;
-  animation-delay: 4s;
+  opacity: 0.15;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.2; }
-  50% { transform: scale(1.2); opacity: 0.3; }
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
 }
 
-/* Container */
-.ats-container {
+/* Layout */
+.main-content {
   position: relative;
   z-index: 10;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: auto;
+  padding: 3rem 1rem;
 }
 
-/* Header */
-.ats-title {
-  font-size: 3rem;
-  font-weight: bold;
-  background: linear-gradient(to right, #22d3ee, #a855f7, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 900px) {
+  .grid-container,
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
 }
 
-.ats-subtitle {
-  font-size: 1.2rem;
-  color: #d1d5db;
-}
-
-/* Glass card */
+/* Glass Card */
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+/* Titles */
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #22d3ee, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+}
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 /* Inputs */
-.ats-label {
-  display: block;
-  font-weight: 600;
-  margin: 1rem 0 0.5rem;
-}
-
-.ats-textarea {
+.input-textarea,
+.input-file {
   width: 100%;
-  padding: 1rem;
-  border-radius: 0.75rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+}
+.input-textarea {
   resize: none;
+  min-height: 150px;
 }
-
-.ats-file {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  color: white;
-}
-
-.file-success {
+.file-name {
   margin-top: 0.5rem;
   color: #4ade80;
   font-weight: 500;
 }
 
 /* Buttons */
-.ats-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-primary {
-  flex: 1;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  background: linear-gradient(to right, #06b6d4, #a855f7);
-  border: none;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-primary:disabled {
-  background: gray;
-  cursor: not-allowed;
-}
-
+.btn-primary,
 .btn-secondary {
   flex: 1;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn-primary {
+  background: linear-gradient(to right, #22d3ee, #a855f7);
   color: white;
-  cursor: pointer;
+}
+.btn-primary:hover {
+  background: linear-gradient(to right, #06b6d4, #9333ea);
+}
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Preview */
-.preview-title {
-  font-size: 1.5rem;
+/* Error Box */
+.error-box {
+  padding: 0.8rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
   margin-bottom: 1rem;
+  color: #f87171;
+  font-weight: 500;
 }
 
-.preview-box {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  height: 250px;
+/* Resume Preview */
+.resume-preview {
+  max-height: 250px;
   overflow-y: auto;
-}
-
-.preview-note {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #9ca3af;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-family: monospace;
+  white-space: pre-wrap;
 }
 
 /* Score Circle */
-.score-card {
-  text-align: center;
-}
-
 .score-circle {
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  margin: 0 auto 1rem;
+  margin: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-
 .score-inner {
   background: rgba(15, 23, 42, 0.9);
   border-radius: 50%;
-  width: 90%;
-  height: 90%;
+  width: 85%;
+  height: 85%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
+.score-inner h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+.score-inner p {
+  color: #cbd5e1;
+}
 
-.score-value {
+/* Stats */
+.stat-card {
+  text-align: center;
+}
+.stat-card h3 {
   font-size: 2rem;
   font-weight: bold;
 }
+.stat-card p {
+  color: #cbd5e1;
+}
 
-.score-label {
-  font-size: 0.9rem;
-  color: #d1d5db;
+/* Skills */
+.skills-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.skill-tag {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.skill-tag.green {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+.skill-tag.red {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
 }

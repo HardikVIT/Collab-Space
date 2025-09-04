@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import mammoth from "mammoth";
-import "./ResumeATS.css"; // ✅ Import vanilla CSS
+import "./ResumeATS.css";
 
 const ResumeATS = () => {
   const [jobDescription, setJobDescription] = useState("");
@@ -14,12 +14,10 @@ const ResumeATS = () => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (file.size > 5 * 1024 * 1024) {
       setError("File too large (max 5MB).");
       return;
     }
-
     setFileName(file.name);
 
     const reader = new FileReader();
@@ -27,12 +25,8 @@ const ResumeATS = () => {
       try {
         alert("File uploaded successfully!");
         const arrayBuffer = event.target.result;
-
-        // Extract text from .docx
         const { value } = await mammoth.extractRawText({ arrayBuffer });
-
         setResume(value);
-        console.log(value);
         setError(null);
       } catch (err) {
         setError("Error extracting text from DOCX.");
@@ -55,10 +49,9 @@ const ResumeATS = () => {
   const analyzeResume = async () => {
     if (!jobDescription.trim()) return setError("Enter job description.");
     if (!resume) return setError("Upload a resume file.");
-    
+
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await fetch("https://collab-space-backend-login-ats.vercel.app/", {
         method: "POST",
@@ -66,11 +59,11 @@ const ResumeATS = () => {
         body: JSON.stringify({ job_description: jobDescription, resume_text: resume }),
       });
 
-      if (!response.ok) throw new Error("Failed to analyze. Try again due to error.");
+      if (!response.ok) throw new Error("Failed to analyze. Try again.");
       const result = await response.json();
       setAnalysisResult(result);
     } catch (err) {
-      setError(err.message || "An unexpected error occurred.");
+      setError(err.message || "Unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
@@ -89,51 +82,43 @@ const ResumeATS = () => {
   };
 
   return (
-    <div className="ats-page">
-      {/* Animated background elements */}
-      <div className="ats-background">
-        <div className="bg-circle purple"></div>
-        <div className="bg-circle cyan"></div>
-        <div className="bg-circle indigo"></div>
+    <div className="ats-container">
+      {/* Animated background */}
+      <div className="bg-blobs">
+        <div className="blob purple"></div>
+        <div className="blob cyan"></div>
+        <div className="blob indigo"></div>
       </div>
 
-      <div className="ats-container">
-        <div className="ats-header">
-          <h1 className="ats-title">ATS Resume Scanner</h1>
-          <p className="ats-subtitle">
-            Advanced AI-powered resume analysis to optimize your job application success
+      <div className="main-content">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="title">ATS Resume Scanner</h1>
+          <p className="subtitle">
+            AI-powered resume analysis to maximize your job application success 🚀
           </p>
         </div>
 
-        {error && (
-          <div className="error-box">
-            <div className="error-dot"></div>
-            <span>{error}</span>
-          </div>
-        )}
+        {error && <div className="error-box">{error}</div>}
 
-        <div className="ats-grid">
+        <div className="grid-container">
           {/* Input Section */}
-          <div className="glass-card">
-            <label className="ats-label">Job Description</label>
+          <div className="glass-card p-8">
+            <label className="label">Job Description</label>
             <textarea
               rows="6"
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job description here..."
-              className="ats-textarea"
+              className="input-textarea"
             />
 
-            <label className="ats-label">Upload Resume (.txt/.docx)</label>
-            <input
-              type="file"
-              accept=".txt,.docx"
-              onChange={handleFileUpload}
-              className="ats-file"
-            />
-            {fileName && <div className="file-success">{fileName}</div>}
+            <label className="label mt-6">Upload Resume (.txt / .docx)</label>
+            <input type="file" accept=".txt,.docx" onChange={handleFileUpload} className="input-file" />
 
-            <div className="ats-buttons">
+            {fileName && <div className="file-name">✔ {fileName}</div>}
+
+            <div className="flex space-x-4 mt-6">
               <button onClick={analyzeResume} disabled={isLoading} className="btn-primary">
                 {isLoading ? "Analyzing..." : "Analyze Resume"}
               </button>
@@ -145,48 +130,85 @@ const ResumeATS = () => {
 
           {/* Resume Preview */}
           {resume && (
-            <div className="glass-card">
-              <h3 className="preview-title">Resume Preview</h3>
-              <div className="preview-box">
+            <div className="glass-card p-8">
+              <h3 className="section-title">Resume Preview</h3>
+              <div className="resume-preview">
                 <pre>{resume}</pre>
               </div>
-              <div className="preview-note">Text extracted from your resume document</div>
             </div>
           )}
         </div>
 
-        {/* Results Section */}
+        {/* Analysis Results */}
         {analysisResult && (
-          <div className="ats-results">
-            <div className="glass-card score-card">
-              <div
-                className="score-circle"
-                style={{ background: getScoreGradient(analysisResult.ats_score) }}
-              >
+          <div className="results-section">
+            {/* Match Score Circle */}
+            <div className="glass-card text-center p-8">
+              <div className="score-circle" style={{ background: getScoreGradient(analysisResult.ats_score) }}>
                 <div className="score-inner">
-                  <div className="score-value">{analysisResult.ats_score}%</div>
-                  <div className="score-label">Match Score</div>
+                  <h2>{analysisResult.ats_score}%</h2>
+                  <p>Match Score</p>
                 </div>
               </div>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: "Match", value: analysisResult.ats_score },
-                      { name: "Gap", value: 100 - analysisResult.ats_score },
-                    ]}
-                    dataKey="value"
-                    innerRadius={70}
-                    outerRadius={100}
-                    startAngle={90}
-                    endAngle={450}
-                  >
-                    <Cell fill={getScoreColor(analysisResult.ats_score)} />
-                    <Cell fill="#374151" />
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+
+              {/* Pie Chart */}
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: "Match", value: analysisResult.ats_score },
+                        { name: "Gap", value: 100 - analysisResult.ats_score },
+                      ]}
+                      dataKey="value"
+                      innerRadius={70}
+                      outerRadius={100}
+                    >
+                      <Cell fill={getScoreColor(analysisResult.ats_score)} />
+                      <Cell fill="#374151" />
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Extra Stats */}
+            <div className="grid-2">
+              <div className="glass-card stat-card">
+                <h3>{analysisResult.similarity_score}%</h3>
+                <p>Content Similarity</p>
+              </div>
+              <div className="glass-card stat-card">
+                <h3>
+                  {analysisResult.skills_matched} / {analysisResult.total_skills_required}
+                </h3>
+                <p>Skills Matched</p>
+              </div>
+            </div>
+
+            {/* Skills Section */}
+            <div className="grid-2">
+              <div className="glass-card p-6">
+                <h3 className="skills-title">✅ Matching Skills</h3>
+                <div className="skills-list">
+                  {analysisResult.matching_skills?.map((s, i) => (
+                    <span key={i} className="skill-tag green">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="glass-card p-6">
+                <h3 className="skills-title">❌ Missing Skills</h3>
+                <div className="skills-list">
+                  {analysisResult.missing_skills?.map((s, i) => (
+                    <span key={i} className="skill-tag red">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
