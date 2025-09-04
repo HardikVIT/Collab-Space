@@ -6,6 +6,159 @@
   overflow: hidden;
   color: white;
 }
+/* ATS Results Main Wrapper */
+.ats-results {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Glass Effect Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ------------------ SCORE SECTION ------------------ */
+.score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Circular Score Badge */
+.score-circle-container {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.score-inner {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 50%;
+  padding: 2.5rem;
+  text-align: center;
+  z-index: 2;
+}
+
+.score-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.score-label {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-top: 0.2rem;
+}
+
+/* Chart wrapper under score */
+.score-chart-container {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 1rem;
+}
+
+/* ------------------ SKILLS SECTION ------------------ */
+.skills-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .skills-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Skills Summary (X / Y) */
+.skills-summary {
+  text-align: center;
+}
+
+.skills-count {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #38bdf8; /* cyan-400 */
+}
+
+.skills-label {
+  font-size: 0.9rem;
+  color: #9ca3af; /* gray-400 */
+}
+
+/* Matching & Missing Skills Boxes */
+.matching-skills {
+  border-left: 4px solid #22c55e; /* green-500 */
+}
+
+.missing-skills {
+  border-left: 4px solid #ef4444; /* red-500 */
+}
+
+.skills-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+}
+
+/* Skills List */
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Skill Tags */
+.skill-tag {
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+/* Matching Skill Tags */
+.match-skill {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+.match-skill:hover {
+  background: rgba(34, 197, 94, 0.25);
+  transform: scale(1.05);
+}
+
+/* Missing Skill Tags */
+.missing-skill {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.missing-skill:hover {
+  background: rgba(239, 68, 68, 0.25);
+  transform: scale(1.05);
+}
 
 .ats-background .bg-circle {
   position: absolute;

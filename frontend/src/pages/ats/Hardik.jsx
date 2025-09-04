@@ -158,9 +158,11 @@ const ResumeATS = () => {
         {/* Results Section */}
         {analysisResult && (
           <div className="ats-results">
+            {/* Score Section */}
             <div className="glass-card score-card">
+              {/* Match Score Circle */}
               <div
-                className="score-circle"
+                className="score-circle-container"
                 style={{ background: getScoreGradient(analysisResult.ats_score) }}
               >
                 <div className="score-inner">
@@ -168,28 +170,68 @@ const ResumeATS = () => {
                   <div className="score-label">Match Score</div>
                 </div>
               </div>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: "Match", value: analysisResult.ats_score },
-                      { name: "Gap", value: 100 - analysisResult.ats_score },
-                    ]}
-                    dataKey="value"
-                    innerRadius={70}
-                    outerRadius={100}
-                    startAngle={90}
-                    endAngle={450}
-                  >
-                    <Cell fill={getScoreColor(analysisResult.ats_score)} />
-                    <Cell fill="#374151" />
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+
+              {/* Pie Chart Section */}
+              <div className="score-chart-container">
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: "Match", value: analysisResult.ats_score },
+                        { name: "Gap", value: 100 - analysisResult.ats_score },
+                      ]}
+                      dataKey="value"
+                      innerRadius={70}
+                      outerRadius={100}
+                      startAngle={90}
+                      endAngle={450}
+                    >
+                      <Cell fill={getScoreColor(analysisResult.ats_score)} />
+                      <Cell fill="#374151" />
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Skills Section */}
+            <div className="skills-section">
+              {/* Skills Summary */}
+              <div className="skills-summary glass-card">
+                <div className="skills-count">
+                  {analysisResult.skills_matched} / {analysisResult.total_skills_required}
+                </div>
+                <div className="skills-label">Skills Matched</div>
+              </div>
+
+              {/* Matching Skills */}
+              <div className="matching-skills glass-card">
+                <h3 className="skills-title">✅ Matching Skills</h3>
+                <div className="skills-list">
+                  {analysisResult.matching_skills?.map((skill, index) => (
+                    <span key={index} className="skill-tag match-skill">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Missing Skills */}
+              <div className="missing-skills glass-card">
+                <h3 className="skills-title">❌ Missing Skills</h3>
+                <div className="skills-list">
+                  {analysisResult.missing_skills?.map((skill, index) => (
+                    <span key={index} className="skill-tag missing-skill">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
