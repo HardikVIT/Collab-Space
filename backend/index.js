@@ -13,7 +13,7 @@ const { error } = require("console");
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors("*")); 
+app.use(cors()); 
 
 let SKILL_DATABASE = [];
 const Users=mongoose.model('Users',{

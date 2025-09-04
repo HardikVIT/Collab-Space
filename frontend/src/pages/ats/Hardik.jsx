@@ -23,10 +23,6 @@ const ResumeATS = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target.result;
-      if (text.length > 500000000) {
-        setError("File content too large. Please shorten the resume.");
-        return;
-      }
       setResume(text);
       setError(null);
     };
