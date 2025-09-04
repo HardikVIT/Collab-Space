@@ -107,7 +107,7 @@ function extractSkills(text) {
   return SKILL_DATABASE.filter(skill => lowerText.includes(skill));
 }
 
-  
+
 app.post("/", (req, res) => {
   const { resume_text, job_description } = req.body;
 

@@ -25,6 +25,7 @@ const ResumeATS = () => {
       alert("File uploaded successfully!");
       const text = event.target.result;
       setResume(text);
+      console.log(text);
       setError(null);
     };
     reader.onerror = () => setError("Error reading file.");
@@ -43,7 +44,7 @@ const ResumeATS = () => {
   const analyzeResume = async () => {
     if (!jobDescription.trim()) return setError("Enter job description.");
     if (!resume) return setError("Upload a resume file.");
-
+    
     setIsLoading(true);
     setError(null);
 
@@ -86,7 +87,7 @@ const ResumeATS = () => {
         />
 
         <label>Upload Resume (.txt/.pdf)</label>
-        <input type="file" accept=".txt,.pdf" onChange={handleFileUpload} />
+        <input type="file" accept=".txt,.docx" onChange={handleFileUpload} />
         {fileName && <span className="file-name">📎 {fileName}</span>}
 
         <div className="ats-buttons">
