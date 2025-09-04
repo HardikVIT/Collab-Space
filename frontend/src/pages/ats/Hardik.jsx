@@ -22,6 +22,7 @@ const ResumeATS = () => {
     setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (event) => {
+      alert("File uploaded successfully!");
       const text = event.target.result;
       setResume(text);
       setError(null);
