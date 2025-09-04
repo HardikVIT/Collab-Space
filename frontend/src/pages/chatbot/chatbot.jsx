@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './chatbot.css'; // Make sure this imports your CSS file
 
@@ -15,13 +15,6 @@ const Chatbot = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [carouselOffset, setCarouselOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  
-  // Add ref to store interval ID
-  const intervalRef = useRef(null);
 
   const categoryIcons = {
     "General Programming": "💻",
@@ -32,158 +25,19 @@ const Chatbot = () => {
     "Software Testing": "🧪",
     "Version Control": "📝",
     "System Design": "🏗️",
-    "Security": "🔒",
+    "Security": "🔐",
     "DevOps": "⚙️",
     "Front-end": "🎨",
     "Back-end": "⚡",
     "Full-stack": "🔥",
     "Algorithms": "🧮",
     "Machine Learning": "🤖",
-    "Distributed Systems": "🌐",
+    "Distributed Systems": "🌍",
     "Networking": "📡",
     "Low-level Systems": "⚡",
     "Database Systems": "🗄️",
     "Data Engineering": "📊",
     "Artificial Intelligence": "🧠"
-  };
-
-  const categoryEntries = Object.entries(categoryIcons);
-  const categoriesPerPage = 6; // 3 columns x 2 rows
-  const maxPages = Math.ceil(categoryEntries.length / categoriesPerPage);
-
-  // Function to start/restart the auto-slide timer
-  const startAutoSlide = () => {
-    // Clear any existing interval
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    
-    // Start new interval
-    intervalRef.current = setInterval(() => {
-      setCarouselOffset(prev => {
-        return prev >= maxPages - 1 ? 0 : prev + 1;
-      });
-    }, 4000); // Slide every 4 seconds
-  };
-
-  // Function to stop the auto-slide timer
-  const stopAutoSlide = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-
-  // Auto-sliding carousel effect
-  useEffect(() => {
-    if (currentStep === 1 && !selectedCategory) {
-      // Only auto-slide when on step 1 AND no category is selected
-      startAutoSlide();
-    } else {
-      // Stop auto-sliding when category is selected or not on step 1
-      stopAutoSlide();
-    }
-
-    // Cleanup on unmount
-    return () => stopAutoSlide();
-  }, [currentStep, selectedCategory, maxPages]);
-
-  // Modified carousel scroll handlers with timer reset
-  const scrollToNext = () => {
-    if (carouselOffset < maxPages - 1) {
-      setCarouselOffset(prev => prev + 1);
-      // Reset the auto-slide timer when manually navigating (only if no category selected)
-      if (!selectedCategory) {
-        startAutoSlide();
-      }
-    }
-  };
-
-  const scrollToPrev = () => {
-    if (carouselOffset > 0) {
-      setCarouselOffset(prev => prev - 1);
-      // Reset the auto-slide timer when manually navigating (only if no category selected)
-      if (!selectedCategory) {
-        startAutoSlide();
-      }
-    }
-  };
-
-  const handleWheel = (e) => {
-    e.preventDefault();
-    if (e.deltaY > 0 || e.deltaX > 0) {
-      scrollToNext();
-    } else {
-      scrollToPrev();
-    }
-  };
-
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX);
-    setScrollLeft(carouselOffset);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX;
-    const walk = (startX - x) / 200; // Adjust sensitivity
-    const newOffset = Math.max(0, Math.min(maxPages - 1, scrollLeft + walk));
-    const roundedOffset = Math.round(newOffset);
-    
-    // Only update if the offset actually changed
-    if (roundedOffset !== carouselOffset) {
-      setCarouselOffset(roundedOffset);
-      // Reset the auto-slide timer when manually dragging (only if no category selected)
-      if (!selectedCategory) {
-        startAutoSlide();
-      }
-    }
-  };
-
-  const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX);
-    setScrollLeft(carouselOffset);
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    const x = e.touches[0].pageX;
-    const walk = (startX - x) / 200; // Adjust sensitivity
-    const newOffset = Math.max(0, Math.min(maxPages - 1, scrollLeft + walk));
-    const roundedOffset = Math.round(newOffset);
-    
-    // Only update if the offset actually changed
-    if (roundedOffset !== carouselOffset) {
-      setCarouselOffset(roundedOffset);
-      // Reset the auto-slide timer when manually touching/swiping (only if no category selected)
-      if (!selectedCategory) {
-        startAutoSlide();
-      }
-    }
-  };
-
-  // Modified page dot click handler with timer reset
-  const handlePageDotClick = (index) => {
-    setCarouselOffset(index);
-    // Reset the auto-slide timer when clicking page dots (only if no category selected)
-    if (!selectedCategory) {
-      startAutoSlide();
-    }
   };
 
   useEffect(() => {
@@ -194,7 +48,7 @@ const Chatbot = () => {
       })
       .catch(err => {
         console.error("Error fetching categories:", err);
-        setError("⚠️ Failed to load categories. Make sure backend is running.");
+        setError("❌ Failed to load categories. Make sure backend is running.");
       });
   }, []);
 
@@ -215,7 +69,7 @@ const Chatbot = () => {
       setError("");
     } catch (err) {
       console.error("Interview error:", err);
-      setError("⚠️ Failed to start interview. Check your server connection.");
+      setError("❌ Failed to start interview. Check your server connection.");
     } finally {
       setLoading(false);
     }
@@ -234,7 +88,7 @@ const Chatbot = () => {
       setError("");
     } catch (err) {
       console.error("Evaluation error:", err);
-      setError("⚠️ Could not evaluate answer. Try again.");
+      setError("❌ Could not evaluate answer. Try again.");
     } finally {
       setLoading(false);
     }
@@ -246,14 +100,6 @@ const Chatbot = () => {
     setFeedback(null);
     setUserAnswer("");
     setSelectedCategory("");
-    setCarouselOffset(0);
-  };
-
-  // Get current page categories
-  const getCurrentPageCategories = () => {
-    const startIndex = carouselOffset * categoriesPerPage;
-    const endIndex = startIndex + categoriesPerPage;
-    return categoryEntries.slice(startIndex, endIndex);
   };
 
   return (
@@ -288,6 +134,14 @@ const Chatbot = () => {
               <div className="stat-number">{feedback ? Math.round(feedback.similarity * 100) : 0}%</div>
               <div className="stat-label">Last Score</div>
             </div>
+            {/*<div className="stat-item">
+              <div className="stat-number">{Math.floor(Math.random() * 25) + 5}m</div>
+              <div className="stat-label">Time</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">{Math.floor(Math.random() * 8) + 1}</div>
+              <div className="stat-label">Streak</div>
+        </div>*/}
           </div>
 
           {/* Progress Steps */}
@@ -320,61 +174,17 @@ const Chatbot = () => {
                 <p>Select a category to begin your interview practice</p>
               </div>
 
-              {/* Category Carousel */}
-              <div className="category-carousel-container">
-                <div 
-                  className="category-carousel-wrapper"
-                  onMouseDown={handleMouseDown}
-                  onMouseLeave={handleMouseLeave}
-                  onMouseUp={handleMouseUp}
-                  onMouseMove={handleMouseMove}
-                  onTouchStart={handleTouchStart}
-                  onTouchEnd={handleTouchEnd}
-                  onTouchMove={handleTouchMove}
-                  onWheel={handleWheel}
-                >
-                  <div className="category-grid-2rows">
-                    {getCurrentPageCategories().map(([category, icon]) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`category-card carousel-card ${selectedCategory === category ? 'selected' : ''}`}
-                      >
-                        <div className="category-icon">{icon}</div>
-                        <div className="category-name">{category}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Scroll indicators */}
-                <div className="carousel-indicators">
-                  <button 
-                    className="carousel-nav prev" 
-                    onClick={scrollToPrev}
-                    disabled={carouselOffset === 0}
+              <div className="category-grid">
+                {Object.entries(categoryIcons).map(([category, icon]) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`category-card ${selectedCategory === category ? 'selected' : ''}`}
                   >
-                    ‹
+                    <div className="category-icon">{icon}</div>
+                    <div className="category-name">{category}</div>
                   </button>
-                  <button 
-                    className="carousel-nav next" 
-                    onClick={scrollToNext}
-                    disabled={carouselOffset >= maxPages - 1}
-                  >
-                    ›
-                  </button>
-                </div>
-
-                {/* Page indicators */}
-                <div className="page-indicators">
-                  {[...Array(maxPages)].map((_, index) => (
-                    <button
-                      key={index}
-                      className={`page-dot ${index === carouselOffset ? 'active' : ''}`}
-                      onClick={() => handlePageDotClick(index)}
-                    />
-                  ))}
-                </div>
+                ))}
               </div>
 
               <div className="step-actions">
@@ -525,7 +335,7 @@ const Chatbot = () => {
                 </button>
                 <button onClick={resetInterview} className="btn-secondary">
                   <span className="btn-icon">🔄</span>
-                  Start Over
+                  Change Category
                 </button>
               </div>
             </div>
