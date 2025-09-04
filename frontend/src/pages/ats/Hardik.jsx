@@ -169,34 +169,6 @@ const ResumeATS = () => {
                   <div className="score-label">Match Score</div>
                 </div>
               </div>
-
-              {/* Pie Chart Section */}
-              <div className="score-chart-container">
-                <ResponsiveContainer width="50%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "Match", value: analysisResult.ats_score },
-                        { name: "Gap", value: 100 - analysisResult.ats_score },
-                      ]}
-                      dataKey="value"
-                      innerRadius={70}
-                      outerRadius={100}
-                      startAngle={90}
-                      endAngle={450}
-                    >
-                      <Cell fill={getScoreColor(analysisResult.ats_score)} />
-                      <Cell fill="#374151" />
-                      <Label
-                        value={`${analysisResult.ats_score}%`}
-                        position="center"
-                        className="ats-score-label"
-                      />
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
             </div>
 
             {/* Skills Section */}
