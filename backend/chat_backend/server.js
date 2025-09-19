@@ -57,11 +57,11 @@ io.on("connection", async (socket) => {
     // Join a room
     socket.on("joinRoom", async (room) => {
         socket.join(room);
+        const chatHistory = await Message.find({ room }).sort({ timestamp: 1 });
+        socket.emit("chatHistory", chatHistory);
         socket.emit("message", { sender: "System", text: `You joined ${room}`, timestamp: new Date() });
 
         // Fetch and send chat history from MongoDB
-        const chatHistory = await Message.find({ room }).sort({ timestamp: 1 });
-        socket.emit("chatHistory", chatHistory);
     });
 
     // Send a message

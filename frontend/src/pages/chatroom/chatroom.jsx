@@ -38,6 +38,9 @@ const ChatRoom = ({ room, onLeave }) => {
   // -------------------------------
   useEffect(() => {
     socket.emit("joinRoom", room);
+    socket.on("chatHistory", (history) => {
+      setMessages(history);
+    });
 
     socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
@@ -51,9 +54,6 @@ const ChatRoom = ({ room, onLeave }) => {
       }, 100);
     });
 
-    socket.on("chatHistory", (history) => {
-      setMessages(history);
-    });
 
     socket.on("every", (stream) => {
       if (remoteVideoRef.current) {
