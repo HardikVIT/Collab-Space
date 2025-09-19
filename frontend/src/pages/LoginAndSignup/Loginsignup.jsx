@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./loginsignup.css";
@@ -17,9 +16,42 @@ const Loginsignup = () => {
 
   const changeHandle = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error message when user starts typing
+    if (errorMessage) {
+      setErrorMessage("");
+    }
+  };
+
+  const validateForm = () => {
+    if (!formData.email || !formData.password) {
+      setErrorMessage("Please fill in all required fields.");
+      return false;
+    }
+
+    if (state === "Sign Up" && !formData.username) {
+      setErrorMessage("Please enter a username.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return false;
+    }
+
+    if (formData.password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters long.");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setErrorMessage("");
 
@@ -51,17 +83,40 @@ const Loginsignup = () => {
         setErrorMessage(responseData.errors || "Something went wrong.");
       }
     } catch (error) {
+      console.error("Login/Signup error:", error);
       setErrorMessage("Server error. Please try again later.");
     }
 
     setLoading(false);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  const switchState = () => {
+    setState(state === "Login" ? "Sign Up" : "Login");
+    setErrorMessage("");
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+    });
+  };
+
   return (
     <div className="loginsignup">
       <div className="container">
         <h1>{state}</h1>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        
+        {errorMessage && (
+          <div className="error-message">
+            {errorMessage}
+          </div>
+        )}
+        
         <div className="loginsignupfields">
           {state === "Sign Up" && (
             <input
@@ -70,6 +125,8 @@ const Loginsignup = () => {
               placeholder="Username"
               value={formData.username}
               onChange={changeHandle}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
             />
           )}
           <input
@@ -78,6 +135,8 @@ const Loginsignup = () => {
             placeholder="Email address"
             value={formData.email}
             onChange={changeHandle}
+            onKeyPress={handleKeyPress}
+            disabled={loading}
           />
           <input
             type="password"
@@ -85,20 +144,28 @@ const Loginsignup = () => {
             placeholder="Password"
             value={formData.password}
             onChange={changeHandle}
+            onKeyPress={handleKeyPress}
+            disabled={loading}
           />
         </div>
-        <button className="submit" onClick={handleSubmit} disabled={loading}>
+        
+        <button 
+          className="submit" 
+          onClick={handleSubmit} 
+          disabled={loading}
+        >
           {loading ? "Processing..." : "Submit"}
         </button>
+        
         {state === "Sign Up" ? (
           <p className="signup">
             Already have an account?{" "}
-            <span onClick={() => setState("Login")}>Login here</span>
+            <span onClick={switchState}>Login here</span>
           </p>
         ) : (
           <p className="signup">
             Create an account?{" "}
-            <span onClick={() => setState("Sign Up")}>Sign up here</span>
+            <span onClick={switchState}>Sign up here</span>
           </p>
         )}
       </div>
