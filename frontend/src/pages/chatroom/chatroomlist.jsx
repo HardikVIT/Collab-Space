@@ -9,12 +9,12 @@ const ChatRoomsList = ({ onJoinRoom }) => {
     const [newRoom, setNewRoom] = useState("");
 
     useEffect(() => {
+        socket.emit("requestRooms");
         socket.on("roomList", (updatedRooms) => {
             setRooms(updatedRooms);
         });
 
         // Request rooms when the component mounts
-        socket.emit("requestRooms");
 
         return () => {
             socket.off("roomList");

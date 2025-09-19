@@ -21,13 +21,13 @@ const ChatRoom = ({ room, onLeave }) => {
     socket.emit("joinRoom", room);
 
     // === Chat logic ===
+    socket.on("chatHistory", (history) => {
+      setMessages(history);
+    });
     socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
 
-    socket.on("chatHistory", (history) => {
-      setMessages(history);
-    });
 
     // === WebRTC setup ===
     pcRef.current = new RTCPeerConnection({
