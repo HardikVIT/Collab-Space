@@ -186,18 +186,6 @@ const Chatbot = () => {
     }
   };
 
-  useEffect(() => {
-    axios.get(`https://collab-space-bot.vercel.app/categories`)
-      .then(res => {
-        setCategories(res.data.categories || []);
-        setError("");
-      })
-      .catch(err => {
-        console.error("Error fetching categories:", err);
-        setError("⚠️ Failed to load categories. Make sure backend is running.");
-      });
-  }, []);
-
   const startInterview = async () => {
     try {
       setLoading(true);
