@@ -135,10 +135,10 @@
   100% { width: 100px; }
 }
 
-/* Available Rooms Header */
+/* Available Rooms Header - Aligned properly */
 .Available {
   position: fixed;
-  top: 15%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -156,14 +156,14 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Rooms List Container */
+/* Rooms List Container - Better aligned */
 .Rooms {
   position: fixed;
-  top: 28%;
-  right: 5%;
-  width: 45%;
+  top: 30%;
+  right: 3%;
+  width: 47%;
   max-width: 500px;
-  height: 45%;
+  height: 40%;
   padding: 30px;
   overflow-y: auto;
   z-index: 80;
@@ -184,10 +184,23 @@
   border-radius: 4px;
 }
 
-/* Input Container */
+/* Chat Selection - Left side aligned */
+.chat-selection {
+  position: fixed;
+  top: 30%;
+  left: 3%;
+  width: 47%;
+  max-width: 450px;
+  height: 40%;
+  padding: 30px;
+  z-index: 80;
+  animation: slideInFromLeft 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s both;
+}
+
+/* Input Container - Bottom aligned */
 .Input {
   position: fixed;
-  bottom: 15%;
+  bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -206,22 +219,7 @@
   gap: 20px;
   height: 100vh;
   padding: 20px;
-  padding-top: 120px; /* Space for title */
-}
-
-/* Chat Room Title - Spans full width */
-.chat-room-title {
-  position: fixed;
-  top: 2%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 1200px;
-  padding: 25px 40px;
-  text-align: center;
-  z-index: 100;
-  grid-column: 1 / -1;
-  animation: slideInFromTop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  padding-top: 140px; /* Space for title */
 }
 
 /* Left Column - Screen Share/Remote Video */
@@ -264,7 +262,7 @@
 /* Bottom Row - Leave Button and Chat Input */
 .chat-room-footer {
   position: fixed;
-  bottom: 2%;
+  bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -311,57 +309,31 @@
   animation: slideInFromRight 1s ease-out 0.8s both;
 }
 
-/* Rooms List Layout - Keep original for room list page */
-.rooms-page .Rooms {
-  position: fixed;
-  top: 28%;
-  right: 5%;
-  width: 45%;
-  max-width: 500px;
-  height: 45%;
-  padding: 30px;
-  overflow-y: auto;
-  z-index: 80;
-  animation: slideInFromRight 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s both;
+/* Rooms List Layout - For room list page with proper alignment */
+.rooms-page .chat-room-title {
+  top: 2%;
 }
 
 .rooms-page .Available {
-  position: fixed;
-  top: 15%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 600px;
-  padding: 20px 40px;
-  text-align: center;
-  z-index: 90;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
+  top: 16%;
+}
+
+.rooms-page .Rooms {
+  top: 28%;
+  right: 3%;
+  width: 47%;
+  height: 45%;
+}
+
+.rooms-page .chat-selection {
+  top: 28%;
+  left: 3%;
+  width: 47%;
+  height: 45%;
 }
 
 .rooms-page .Input {
-  position: fixed;
-  bottom: 15%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 600px;
-  padding: 30px;
-  text-align: center;
-  z-index: 80;
-  animation: slideInFromBottom 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.6s both;
-}
-
-/* Chat Selection for room list page */
-.rooms-page .chat-selection {
-  position: fixed;
-  top: 25%;
-  left: 5%;
-  width: 45%;
-  max-width: 450px;
-  height: 50%;
-  padding: 30px;
-  z-index: 80;
-  animation: slideInFromLeft 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s both;
+  bottom: 5%;
 }
 
 /* Send Message Button */
@@ -632,31 +604,39 @@ video:hover {
     width: 100%;
   }
   
-  /* Keep rooms page layout for smaller screens */
+  /* Rooms page mobile layout */
   .rooms-page .Rooms, 
-  .rooms-page .chat-selection, 
-  .rooms-page .chat-input-container {
+  .rooms-page .chat-selection {
     position: relative;
-    width: 90%;
+    width: 95%;
     max-width: none;
-    margin: 20px auto;
-    display: block;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    margin: 20px 0;
+    height: auto;
+    min-height: 300px;
   }
   
-  .rooms-page .body1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .rooms-page .chat-room-title, 
-  .rooms-page .Available {
+  .rooms-page .Available,
+  .rooms-page .Input {
     position: relative;
     transform: none;
     left: auto;
     top: auto;
-    margin-bottom: 20px;
+    bottom: auto;
+    width: 95%;
+    max-width: none;
+    margin: 20px auto;
+  }
+  
+  .rooms-page .chat-room-title {
+    position: relative;
+    transform: none;
+    left: auto;
+    top: auto;
+    width: 95%;
+    margin: 20px auto;
   }
 }
 
@@ -680,11 +660,6 @@ video:hover {
     padding: 20px;
   }
   
-  .video-header h3, 
-  .chat-header h3 {
-    font-size: 16px;
-  }
-  
   input, button {
     font-size: 14px;
     padding: 12px 20px;
@@ -696,6 +671,13 @@ video:hover {
   
   .chat-room-footer {
     padding: 10px;
+  }
+  
+  /* Mobile specific room page adjustments */
+  .rooms-page .Rooms,
+  .rooms-page .chat-selection {
+    width: 98%;
+    padding: 20px;
   }
 }
 
@@ -722,626 +704,3 @@ video:hover {
 .error {
   border-left: 4px solid var(--warning-orange);
 }
-
-/* Particle Effect for Special Moments */
-.particles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: var(--accent-blue);
-  border-radius: 50%;
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-100px) rotate(180deg);
-    opacity: 0.5;
-  }
-}
-
-/* Advanced hover effects for buttons */
-button {
-  position: relative;
-  overflow: hidden;
-}
-
-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translate(-50%, -50%);
-  transition: all 0.4s ease;
-}
-
-button:active::after {
-  width: 300px;
-  height: 300px;
-}
-
-/* Smooth page transitions */
-.page-enter {
-  opacity: 0;
-  transform: scale(0.9) translateY(50px);
-}
-
-.page-enter-active {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.page-exit {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-.page-exit-active {
-  opacity: 0;
-  transform: scale(1.1) translateY(-50px);
-  transition: all 0.4s ease-in;
-}
-
-/* Notification styles */
-.notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 20px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-primary);
-  z-index: 10000;
-  animation: slideInNotification 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.notification.success {
-  border-left: 4px solid var(--success-green);
-}
-
-.notification.error {
-  border-left: 4px solid var(--warning-orange);
-}
-
-@keyframes slideInNotification {
-  0% {
-    opacity: 0;
-    transform: translateX(400px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-/* Enhanced input focus states */
-input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 
-    0 0 0 3px rgba(79, 172, 254, 0.1),
-    0 0 20px rgba(79, 172, 254, 0.3);
-  transform: scale(1.02);
-}
-
-/* Tooltip styles */
-.tooltip {
-  position: relative;
-}
-
-.tooltip::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-
-.tooltip::after {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-3px);
-  border: 5px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.9);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.tooltip:hover::before,
-.tooltip:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
-}
-
-/* Enhanced scrollbar for all containers */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-blue) transparent;
-}
-
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-*::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: var(--primary-gradient);
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-gradient);
-}
-
-/* Pulse animation for active elements */
-.pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Magnetic effect for interactive elements */
-.magnetic {
-  transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.magnetic:hover {
-  transform: translate(var(--mouse-x, 0), var(--mouse-y, 0)) scale(1.05);
-}
-
-/* Glass morphism enhancement with better backdrop support */
-@supports (backdrop-filter: blur(20px)) {
-  .glass-container {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-  }
-}
-
-@supports not (backdrop-filter: blur(20px)) {
-  .glass-container {
-    background: rgba(255, 255, 255, 0.15);
-  }
-}
-
-/* Dark mode specific enhancements */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .glass-container {
-    border-width: 2px;
-    background: rgba(0, 0, 0, 0.8);
-  }
-  
-  button {
-    border: 2px solid currentColor;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  .body1::before {
-    animation: none;
-  }
-  
-  .floating, .pulse {
-    animation: none;
-  }
-}
-
-/* Print styles */
-@media print {
-  .glass-container {
-    background: white !important;
-    color: black !important;
-    border: 1px solid black !important;
-    box-shadow: none !important;
-  }
-  
-  button, input {
-    display: none !important;
-  }
-}
-
-/* Focus indicators for accessibility */
-*:focus-visible {
-  outline: 2px solid var(--accent-blue);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-button:focus-visible {
-  outline-color: var(--text-primary);
-}
-
-/* Enhanced mobile responsiveness */
-@media (max-width: 480px) {
-  .body1 {
-    padding: 10px;
-  }
-  
-  .glass-container {
-    border-radius: 15px;
-    padding: 20px;
-  }
-  
-  input {
-    font-size: 16px; /* Prevent zoom on iOS */
-    padding: 12px 16px;
-  }
-  
-  button {
-    min-height: 44px; /* iOS touch target */
-    min-width: 44px;
-  }
-}
-
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-  button:hover {
-    transform: none;
-  }
-  
-  .tooltip:hover::before,
-  .tooltip:hover::after {
-    opacity: 0;
-  }
-  
-  /* Larger touch targets */
-  button, input, li {
-    min-height: 44px;
-  }
-}
-
-/* Landscape mobile optimization */
-@media (max-width: 768px) and (orientation: landscape) {
-  .chat-room-title, .Available {
-    padding: 15px 20px;
-  }
-  
-  .chat-box, .remote-video {
-    height: 35vh;
-  }
-}
-
-/* High DPI display optimization */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .glass-container {
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-  }
-}
-
-/* Custom selection styles */
-::selection {
-  background: rgba(79, 172, 254, 0.3);
-  color: var(--text-primary);
-}
-
-::-moz-selection {
-  background: rgba(79, 172, 254, 0.3);
-  color: var(--text-primary);
-}
-
-/* Enhanced loading states */
-.skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-/* Micro-interactions */
-.bounce-in {
-  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Status indicators */
-.status-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.status-dot.online {
-  background: var(--success-green);
-  box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
-}
-
-.status-dot.offline {
-  background: #95a5a6;
-}
-
-.status-dot.away {
-  background: var(--warning-orange);
-}
-
-/* Enhanced button variants */
-.btn-primary {
-  background: var(--primary-gradient);
-  border: none;
-}
-
-.btn-secondary {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  border: none;
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-  border: none;
-}
-
-/* Enhanced form styling */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  color: var(--text-primary);
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.form-control:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-}
-
-/* Badge component */
-.badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: var(--accent-blue);
-  color: var(--text-primary);
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.badge.success {
-  background: var(--success-green);
-}
-
-.badge.warning {
-  background: var(--warning-orange);
-}
-
-.badge.secondary {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-}
-
-/* Card component */
-.card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: var(--shadow-primary);
-}
-
-.card-header {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.card-title {
-  color: var(--text-primary);
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.card-subtitle {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-/* Avatar component */
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--primary-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 16px;
-  position: relative;
-}
-
-.avatar.large {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-}
-
-.avatar.small {
-  width: 30px;
-  height: 30px;
-  font-size: 12px;
-}
-
-.avatar::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--glass-bg);
-  border-radius: 50%;
-  background: var(--success-green);
-}
-
-/* Progress bar */
-.progress {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  background: var(--primary-gradient);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  position: relative;
-}
-
-.progress-bar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  animation: shimmer 2s infinite;
-}
-
-/* Enhanced utility classes */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
-.mb-0 { margin-bottom: 0; }
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
-
-.mt-0 { margin-top: 0; }
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-
-.p-0 { padding: 0; }
-.p-1 { padding: 8px; }
-.p-2 { padding: 16px; }
-.p-3 { padding: 24px; }
-
-.d-flex { display: flex; }
-.flex-column { flex-direction: column; }
-.align-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-
-.w-100 { width: 100%; }
-.h-100 { height: 100%; }
-
-.opacity-50 { opacity: 0.5; }
-.opacity-75 { opacity: 0.75; }

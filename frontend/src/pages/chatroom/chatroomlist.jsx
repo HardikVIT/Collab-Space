@@ -93,37 +93,14 @@ const ChatRoomsList = ({ onJoinRoom }) => {
 
     return (
         <div className="body1 rooms-page">
-            {/* Particle container for ambient effects */}
-            <div className="particles"></div>
-            
-            {/* Hero Section */}
-            <div className="hero-section">
-                <div className="hero-content glass-container">
-                    <h1 className="hero-title">
-                        <span className="gradient-text">CollabSpace</span>
-                        <div className="subtitle">Real-time Chat & Screen Sharing</div>
-                    </h1>
-                    <div className="hero-stats">
-                        <div className="stat-item">
-                            <span className="stat-number">{rooms.length}</span>
-                            <span className="stat-label">Active Rooms</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <span className="stat-number">{totalUsers}</span>
-                            <span className="stat-label">Users Online</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <div className={`status-indicator ${connectionStatus}`}></div>
-                            <span className="stat-label">{connectionStatus}</span>
-                        </div>
-                    </div>
-                </div>
+            {/* Chat Room Title - Centered at top */}
+            <div className="chat-room-title glass-container">
+                <h2>🌟 CollabSpace Chat Rooms</h2>
             </div>
 
+            {/* Available Rooms Header - Below title */}
             <div className="Available glass-container">
-                <h2>🌟 Available Chat Rooms</h2>
+                <h2>Available Chat Rooms</h2>
                 {isLoading && (
                     <div className="loading-container">
                         <div className="loading"></div>
@@ -132,34 +109,56 @@ const ChatRoomsList = ({ onJoinRoom }) => {
                 )}
             </div>
 
-            <div className="Rooms glass-container">
-                {!isLoading && rooms.length === 0 ? (
+            {/* Left Side - Chat Selection Info */}
+            <div className="chat-selection glass-container">
+                <div className="hero-stats">
+                    <div className="stat-item">
+                        <span className="stat-number">{rooms.length}</span>
+                        <span className="stat-label">Active Rooms</span>
+                    </div>
+                    <div className="stat-divider"></div>
+                    <div className="stat-item">
+                        <span className="stat-number">{totalUsers}</span>
+                        <span className="stat-label">Users Online</span>
+                    </div>
+                    <div className="stat-divider"></div>
+                    <div className="stat-item">
+                        <div className={`status-indicator ${connectionStatus}`}></div>
+                        <span className="stat-label">{connectionStatus}</span>
+                    </div>
+                </div>
+                
+                {!isLoading && rooms.length === 0 && (
                     <div className="empty-rooms">
                         <div className="empty-icon">🏠</div>
                         <h3>No rooms available</h3>
                         <p>Be the first to create a room and start chatting!</p>
                     </div>
-                ) : (
-                    <ul className="rooms-list">
-                        {rooms.map((room, index) => (
-                            <li key={room} className="room-item" style={{ '--item-index': index }}>
-                                <button 
-                                    onClick={() => handleRoomJoin(room)}
-                                    data-room={room}
-                                    className="room-button"
-                                >
-                                    <div className="room-info">
-                                        <span className="room-name">🚀 {room}</span>
-                                        <span className="room-description">Click to join and start collaborating</span>
-                                    </div>
-                                    <div className="join-arrow">→</div>
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
                 )}
             </div>
 
+            {/* Right Side - Rooms List */}
+            <div className="Rooms glass-container">
+                <ul className="rooms-list">
+                    {rooms.map((room, index) => (
+                        <li key={room} className="room-item" style={{ '--item-index': index }}>
+                            <button 
+                                onClick={() => handleRoomJoin(room)}
+                                data-room={room}
+                                className="room-button"
+                            >
+                                <div className="room-info">
+                                    <span className="room-name">🚀 {room}</span>
+                                    <span className="room-description">Click to join and start collaborating</span>
+                                </div>
+                                <div className="join-arrow">→</div>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {/* Bottom - Input Section */}
             <div className="Input glass-container">
                 <div className="input-header">
                     <h3>✨ Create New Room</h3>
@@ -185,55 +184,12 @@ const ChatRoomsList = ({ onJoinRoom }) => {
             </div>
 
             <style jsx>{`
-                .hero-section {
-                    position: fixed;
-                    top: 5%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 90%;
-                    max-width: 800px;
-                    z-index: 100;
-                    animation: slideInFromTop 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                }
-
-                .hero-content {
-                    padding: 40px;
-                    text-align: center;
-                }
-
-                .hero-title {
-                    margin-bottom: 20px;
-                }
-
-                .gradient-text {
-                    font-size: clamp(32px, 6vw, 48px);
-                    font-weight: 800;
-                    background: var(--primary-gradient);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                    display: block;
-                    animation: textGlow 3s ease-in-out infinite alternate;
-                }
-
-                @keyframes textGlow {
-                    0% { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5)); }
-                    100% { filter: drop-shadow(0 0 20px rgba(118, 75, 162, 0.8)); }
-                }
-
-                .subtitle {
-                    font-size: 18px;
-                    color: var(--text-secondary);
-                    font-weight: 400;
-                    margin-top: 10px;
-                }
-
                 .hero-stats {
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     gap: 30px;
-                    margin-top: 30px;
+                    margin: 30px 0;
                     flex-wrap: wrap;
                 }
 
@@ -295,7 +251,7 @@ const ChatRoomsList = ({ onJoinRoom }) => {
 
                 .empty-rooms {
                     text-align: center;
-                    padding: 60px 20px;
+                    padding: 40px 20px;
                     color: var(--text-secondary);
                 }
 
@@ -307,7 +263,7 @@ const ChatRoomsList = ({ onJoinRoom }) => {
                 .empty-rooms h3 {
                     color: var(--text-primary);
                     margin-bottom: 10px;
-                    font-size: 24px;
+                    font-size: 20px;
                 }
 
                 .rooms-list {
