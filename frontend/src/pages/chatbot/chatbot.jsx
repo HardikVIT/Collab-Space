@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './chatbot.css'; // Make sure this imports your CSS file
 
-const API_BASE = "https://collab-space-interview.vercel.app";
+const API_BASE = "https://collab-space-interview.vercel.app/";
 
 const Chatbot = () => {
   const [categories, setCategories] = useState([]);
