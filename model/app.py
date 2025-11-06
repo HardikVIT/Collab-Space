@@ -49,7 +49,7 @@ def generate_response(user_input, correct_answer):
 
 def compute_similarity(user_input, correct_answer):
     """Use Hugging Face Inference API for sentence similarity"""
-    url = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
+    url = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
     headers = {"Authorization": f"Bearer {hf_api_key}"}
     payload = {"inputs": {"source_sentence": user_input, "sentences": [correct_answer]}}
     r = requests.post(url, headers=headers, json=payload)
